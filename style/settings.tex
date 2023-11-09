@@ -9,25 +9,61 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{bracecolor}{rgb}{1, 0.788, 0.133}
+\definecolor{keywordcolor}{rgb}{0.773, 0.376, 0.408}
+\definecolor{stringcolor}{rgb}{0.780, 0.537, 0.839}
+\definecolor{punct}{rgb}{0.0, 0.0, 0.0}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{lightblue}{rgb}{0.0,0.0,0.9}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\definecolor{darkred}{rgb}{0.6,0.0,0.0}
+
+
+\lstdefinelanguage{json}{
+    basicstyle=\color{stringcolor}\normalfont\ttfamily\footnotesize,
+    showstringspaces=false,
+    literate=
+     *{":"}{{{\color{punct}{:}}}}{1}
+      {","}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{bracecolor}{\{}}}}{1}
+      {\}}{{{\color{bracecolor}{\}}}}}{1}
+      {\"doi\"}{{{\color{keywordcolor}{"doi"}}}}{5}
+      {\"pmcid\"}{{{\color{keywordcolor}{"pmcid"}}}}{7}
+      {\"plain\_text\"}{{{\color{keywordcolor}{"plain\_text"}}}}{12}
+      {\"technical\_text\"}{{{\color{keywordcolor}{"technical\_text"}}}}{16}
+      {\"full\_text\"}{{{\color{keywordcolor}{"full\_text"}}}}{11}
+      {\"journal\"}{{{\color{keywordcolor}{"journal"}}}}{9}
+      {\"topics\"}{{{\color{keywordcolor}{"topics"}}}}{8}
+      {\"keywords\"}{{{\color{keywordcolor}{"keywords"}}}}{11},
+}
+
+\lstdefinelanguage{XML}
+{
+  stringstyle=\color{mauve},
+  identifierstyle=\color{lightblue},
+  keywordstyle=\color{red},
+  commentstyle=\color{gray}\itshape, % comments in italic and gray color
+  morekeywords={xmlns,version,type,id,x,y,source,target,version,tool,transRef,roleRef,objective,eventually,title,sec,abstract,abstract-type}
+}
 
 \lstset{
-  frame=single,
-  captionpos=b,
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3
+    frame=trbl,
+    rulecolor=\color{black!40},
+    captionpos=b,
+    aboveskip=3mm,
+    belowskip=3mm,
+    columns=flexible,
+    basicstyle=\color{black}\footnotesize,
+    numbers=none,
+    breakatwhitespace=true,
+    breaklines=true,
+    tabsize=3,
+    showstringspaces=false,
+    backgroundcolor=\color{white},
 }
+
+
+
 
 \makeatletter
 \def\cleardoublepage{
