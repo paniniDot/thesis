@@ -31,8 +31,9 @@
 \usetikzlibrary{positioning, arrows.meta, shapes.geometric, shadows, shapes, arrows}
 \usepackage{pgf-umlsd}
 \usepackage{booktabs}
-\usepackage{style/python}
-
+\usepackage{newfloat}
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,breakable,xparse,skins}
 
 
 
@@ -96,8 +97,7 @@
 \markboth{Abstract}{Abstract}
 
 Questa tesi esplora il prospero settore dell'intelligenza artificiale (AI) e dell'elaborazione del linguaggio naturale (NLP), con l'obiettivo di automatizzare la creazione di riassunti comprensibili per gli articoli scientifici. Sfruttando metodologie AI all'avanguardia, questo studio si propone di ridurre il divario tra i dettagli intricati racchiusi nelle pubblicazioni scientifiche e la loro comprensione da parte del grande pubblico.
-
-La complessità e la profondità tecnica degli articoli accademici spesso costituiscono una barriera alla comprensione generalizzata. Mentre gli abstract tecnici si rivolgono bene agli esperti del settore, possono risultare criptici per i ``non addetti ai lavori''. Affrontando questo divario comunicativo, la tesi propone un sistema automatizzato in grado di elaborare 'riassunti per il grande pubblico' o 'riassunti in linguaggio semplice', migliorando così l'accessibilità delle intuizioni scientifiche.
+La complessità e la profondità tecnica degli articoli accademici spesso costituiscono una barriera alla comprensione generalizzata. Mentre gli abstract tecnici si rivolgono bene agli esperti del settore, possono risultare criptici per i ``non addetti ai lavori''. Affrontando questo divario comunicativo, la tesi propone un nuovo dataset denominato \emph{SciLay} il cui scopo è quello di fornire una base solida per l'addestramento di modelli di generazione automatica di riassunti di ricerche scientifiche.
 
 \newpage
 
@@ -175,7 +175,7 @@ Il NLP è una delle sfide più complesse in questo ambito, poiché richiede l'an
 
 
 La tesi si propone di valutare e confrontare vari metodi NLP e DL, evidenziando i loro vantaggi e svantaggi nell'ambito della sfida di estrarre conoscenze comprensibili dal pubblico da articoli scientifici biomedici.
-Per fare questo viene presentato un nuovo dataset \emph{SciLay} creato ad'hoc per questo task.
+A supporto di questo obiettivo, viene presentato il nuovo dataset \emph{SciLay}, appositamente sviluppato per questa ricerca. Questo dataset, ricavato dalla raccolta di articoli provenienti da oltre 50 riviste specializzate, include tra le sue caratteristiche campi designati a ospitare, in formato testuale semplice (e quindi facilmente elaborabile da un calcolatore), il testo integrale dell'articolo, il suo abstract e un riassunto lay, vale a dire in una forma semplificata e accessibile.
 
 
 Il lavoro di tesi è stato suddiviso nei seguenti capitoli:
@@ -185,7 +185,6 @@ Il lavoro di tesi è stato suddiviso nei seguenti capitoli:
     \item \textbf{Capitolo \ref{cap:analisi_dati}} - Analisi preliminare sulla struttura e modalità di raccolta dei dati.
     \item \textbf{Capitolo \ref{cap:modellazione-prog}} - Introduzione alla modellazione del progetto con i primi approcci alle difficoltà riscontrate e alle relative soluzioni.
     \item \textbf{Capitolo \ref{cap:sviluppo}} - Sviluppo concreto del progetto nelle sue varie fasi e relativo codice.
-    \item \textbf{Capitolo \ref{cap:codice}} - Il lavoro realizzato e il codice impiegato.
 \end{itemize}
 
 
@@ -537,7 +536,7 @@ Questo permette alla rete di mantenere informazioni relative ai passaggi precede
 Questi stati nascosti vengono generati da delle \emph{connessioni ricorrenti}, ovvero archi che formano cicli all'interno della rete: piuttosto che confluire in un'unica direzione, l'informazione può tornare anche indietro nella rete, per questo motivo si parla di \emph{backpropagation}.
 In definitiva l'output di una rete neurale ricorrente è funzione sia del suo hidden state che dell'input fornito.
 
-Formalmente coccorre immaginare che le informazioni vengano processate ad intervalli discreti di tempo $t_0 \rightarrow t_1 \rightarrow t_2 \rightarrow \cdots$.
+Formalmente occorre immaginare che le informazioni vengano processate ad intervalli discreti di tempo $t_0 \rightarrow t_1 \rightarrow t_2 \rightarrow \cdots$.
 Ad ogni iterazione $t_i$ il vettore di stato nascosto viene aggiornato (dopo che l'informazione è processata all'interno di un ciclo, o connessione ricorrente) mantenendo ``in memoria'' tutta la sequenza di input fino a quel momento. Durante la fase di \emph{forwardpropagation} il neurone invia, oltre all'input arrivato al tempo $t_i$ il suo stato nascosto aggiornato al passo $t_{i-1}$. 
 
 \subsubsection{Reti di Elman}
@@ -625,7 +624,7 @@ A tutto questo si aggiungono anche la possibilità di abbreviare parole o intere
 In questo contesto così complicato e affascinante spiccano una serie di task ad oggi di particolare interesse. 
 \begin{itemize}
     \item \emph{Disambiguazione semantica delle parole} (WSD). Determinare il significato appropriato di una parola in un determinato contesto è una sfida fondamentale in NLP, data la presenza di parole identiche ma con significati diversi in base al contesto.
-    Un esempio potrebbe essere il seguente
+    Un esempio potrebbe essere il seguente:
     \begin{center}
         ``Conseguire un titolo di studio avanzato è considerato un obiettivo \emph{ambito} nel mondo accademico.'' \\
         oppure \\
@@ -654,19 +653,19 @@ Gli algoritmi di extractive summarization frequentemente adoperano tecniche qual
 \end{itemize}
 
 Come suggerisce il titolo di questa tesi, per i nostri esperimenti abbiamo deciso di utilizzare i modelli astrattivi disponibili in letteratura, piuttosto che tentare approcci estrattivi. 
-Dato che l'obiettivo, come delineato nell'introduzione, è la generazione di riassunti lay, ovvero formulati in modo meno tecnico e più accessibile ad un ampio pubblico, il task ha portato con sé ulteriori sfide, quali l'identificazione delle sezioni cruciali del testo e la loro semplificazione. Per questa ragione, si è ritenuto che gli approcci extractive non fossero adeguatamente efficaci per raggiungere tale scopo.
+Dato che l'obiettivo, come delineato nell'introduzione, è la generazione di riassunti lay, ovvero formulati in modo meno tecnico e più accessibile ad un ampio pubblico, nonché tecnici, il task ha portato con sé ulteriori sfide, quali l'identificazione delle sezioni cruciali del testo e la loro semplificazione. Per questa ragione, si è ritenuto che gli approcci extractive non fossero adeguatamente efficaci per raggiungere tale scopo.
 
 
 \subsection{Pre-processing di testo} 
 \label{preproc}
 Tutte le problematiche intrinseche del linguaggio delineate in precedenza vengono parzialmente arginate da una fase preliminare chiamata \emph{pre-processing}. 
 Il preprocessing del testo è un passaggio cruciale nell'ambito del Natural Language Processing (NLP), il quale mira a semplificare il testo e ridurre la sua complessità, permettendo ai modelli di apprendimento automatico di operare più efficacemente.
-Ovviamente nel corso del tempo sono state introdotte un numero cospiquo di tecniche di questo tipo, ma le più importanti sono le seguenti
+Ovviamente nel corso del tempo sono state introdotte un numero cospiquo di tecniche di questo tipo, ma le più importanti sono le seguenti:
 
 \begin{itemize}
     \item \emph{Tokenizzazione}. La tokenizzazione è un passaggio cruciale nel pre-processing del testo per il Natural Language Processing (NLP). Questo processo consiste nella suddivisione del testo in ingresso (corpus) in unità più piccole e maneggevoli, denominate ``\emph{token}''. Questi token rappresentano spesso parole, ma possono anche rappresentare simboli, frasi o altre unità di testo, a seconda delle specifiche necessità del task di NLP in questione. La tokenizzazione è essenziale per convertire il linguaggio naturale in una forma che può essere interpretata e manipolata dai modelli di machine learning, trasformando il testo grezzo in una struttura di dati più organizzata, come un vettore di token. Questo passo preliminare permette di preparare il testo per le successive fasi di elaborazione, come la vettorializzazione. 
     \item \emph{Rimozione delle Stop Words}. Nel linguaggio naturale esistono parole che non apportano alcun contributo al contenuto del testo, ma servono solamente ad arricchire il linguaggio e permettere una comprensione migliore a coloro che leggono. Esse sono parole funzionali che servono a collegare le parole contentive, cioè quelle che trasportano il significato principale del discorso, e a strutturare grammaticalmente le frasi. Senza le stop word, il linguaggio sarebbe frammentario e privo di coesione, rendendo difficile la comprensione del discorso. Per loro natura, dunque, non contribuiscono a dare significato al testo e pertanto non solo risultano inutili alla comprensione del testo da parte di un modello di NLP, ma aumentano la dimensionalità del problema rendendo più difficile e lungo l'addestramento. Alcuni esempi di queste parole possono essere ad esempio le congiunzioni come ``e'', ``di'', ``in'', ecc.  
-    \item \emph{Lemmatizzazione e Stemming}. La lemmatizzazione e lo stemming sono tecniche di elaborazione del linguaggio naturale che mirano a ridurre le parole a una forma base o radice, facilitando così l'analisi del testo e migliorando l'efficacia dei modelli di NLP. In particolare 
+    \item \emph{Lemmatizzazione e Stemming}. La lemmatizzazione e lo stemming sono tecniche di elaborazione del linguaggio naturale che mirano a ridurre le parole a una forma base o radice, facilitando così l'analisi del testo e migliorando l'efficacia dei modelli di NLP. In particolare: 
     \begin{itemize}
         \item La lemmatizzazione è il processo di riduzione di una parola alla sua forma canonica o lemma, cioè alla sua forma base che ha un significato nel dizionario. Questo processo tiene conto del contesto e della morfologia della parola, utilizzando vocabolari e analisi grammaticali per assicurare che la parola risultante abbia un significato valido. 
         \item Lo stemming, a differenza della lemmatizzazione, è un processo più rudimentale che riduce le parole alla loro radice tramite regole euristico-morfologiche, senza tenere conto del contesto. Questo processo può talvolta produrre radici che non hanno un significato valido nel dizionario. 
@@ -699,11 +698,11 @@ Ovviamente nel corso del tempo sono state introdotte un numero cospiquo di tecni
 \end{figure}
 
 \section{Tecniche astrattive allo stato dell'arte}
-Alcune delle architetture più avanzate, tecnicamente definite \emph{allo stato dell'arte}, per compiti quali la generazione di testo, la comprensione del linguaggio e la traduzione, come i seguenti Large Language Models (LLMs) \emph{BART} \cite{DBLP:journals/corr/abs-1910-13461}, \emph{GPT-3} \cite{DBLP:journals/corr/abs-2005-14165}, e \emph{T5} \cite{DBLP:journals/corr/abs-1910-10683}, si basano sulle tecniche introdotte di seguito fra cui spiccano
+Alcune delle architetture più avanzate, tecnicamente definite \emph{allo stato dell'arte}, per compiti quali la generazione di testo, la comprensione del linguaggio e la traduzione, come i seguenti modelli \emph{BART} \cite{DBLP:journals/corr/abs-1910-13461}, \emph{T5} \cite{DBLP:journals/corr/abs-1910-10683} e \emph{GPT-3} \cite{DBLP:journals/corr/abs-2005-14165} (quest'ultimo Large Language Model o LLM\footnote{Nella letteratura corrente, non esiste una definizione formale universalmente riconosciuta per i Large Language Models (LLM). Tuttavia, è generalmente accettato nella comunità scientifica che i modelli di linguaggio con oltre un miliardo di parametri rientrano in questa categoria.}), si basano sulle tecniche introdotte di seguito fra cui spiccano:
 \begin{itemize}
     \item Modelli \emph{Sequence-to-Sequence}.
     \item Meccanismo di \emph{Attention}.
-    \item Architettura a \emph{Transformers}.
+    \item Architettura \emph{Transformers}.
 \end{itemize}
 
 \subsection{Modelli Seq2Seq}
@@ -916,7 +915,7 @@ La Figura \ref{fig:attention-hm}, ad esempio, illustra una heatmap che evidenzia
     \tiny{Fonte: https://github.com/tensorflow/nmt/blob/365e7386e6659526f00fa4ad17eefb13d52e3706/nmt/g3doc/img/attention\_vis.jpg}
 \end{figure}
 
-Più precisamente, questa heatmap correla ogni parola in input con ogni parola in output, formando una griglia dove la cella $ij$ si illumina con un colore più luminoso quanto più la parola $j$ in input è legata alla parola $i$ in output. È interessante notare che, in generale, le celle lungo la diagonale principale sono più luminose, rispecchiando la tendenza a mantenere l'ordine delle parole, anche tra lingue differenti. Tuttavia, osservando la sequenza ``European Economic Area'' è evidente come, a causa dell'inversione dell'ordine delle parole in francese (``européenne économique zone''),la correlazione più forte si discosti dalla diagonale principale.
+Più precisamente, questa heatmap correla ogni parola in input con ogni parola in output, formando una griglia dove la cella $ij$ si illumina con un colore più luminoso quanto più la parola $j$ in input è legata alla parola $i$ in output. È interessante notare che, in generale, le celle lungo la diagonale principale sono più luminose, rispecchiando la tendenza a mantenere l'ordine delle parole, anche tra lingue differenti. Tuttavia, osservando la sequenza ``European Economic Area'' è evidente come, a causa dell'inversione dell'ordine delle parole in francese (``européenne économique zone''), la correlazione più forte si discosti dalla diagonale principale.
 
 \subsubsection{Funzionamento}
 Un modello che fa uso di attention si discosta dai classici modelli Seq2Seq RNN in due modi principalmente. 
@@ -1037,7 +1036,7 @@ viene poi fornita alla rete neurale feed-forward che produce la seconda parola i
 \subsection{Transformers}
 Architettura formalmente presentata nel paper intitolato ``Attention is All You Need'' \cite{DBLP:journals/corr/VaswaniSPUJGKP17}, con l'obiettivo di superare i modelli sequence-to-sequence basati su RNN e meccanismi di Attention, dettagliati nei paragrafi precedenti. 
 
-Il titolo del paper suggerisce la novità cardine introdotta dagli autori: una nuova architettura, denominata \emph{transformers}, che si fonda esclusivamente sul principio dell'attention, eliminando la necessità di impiegare reti neurali ricorrenti. Questo approccio ha dimostrato non solo la sua validità, ma ha anche permesso di raggiungere un significativo miglioramento delle performance nei compiti di elaborazione del linguaggio naturale.
+Il titolo del paper suggerisce la novità cardine introdotta dagli autori: una nuova architettura, denominata \emph{transformer}, che si fonda esclusivamente sul principio dell'attention, eliminando la necessità di impiegare reti neurali ricorrenti. Questo approccio ha dimostrato non solo la sua validità, ma ha anche permesso di raggiungere un significativo miglioramento delle performance nei compiti di elaborazione del linguaggio naturale.
 
 \subsubsection{Funzionamento} L'architettura basata su Transformers, come sarà illustrato, mantiene una struttura non dissimile da quella dei modelli sequence-to-sequence (seq2seq) implementati con Reti Neurali Ricorrenti (RNN). Specificatamente, i modelli seq2seq sono delineati da una struttura encoder-decoder. In tale configurazione, l'encoder è responsabile per trasformare una sequenza di rappresentazioni simboliche (i.e. parole) 
 \begin{equation*}
@@ -1120,7 +1119,7 @@ la \emph{self-attention} consente al modello di associare correttamente il prono
 \begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{images/transformer_self-attention_visualization.png}
-    \caption{Visualizzazione grafica della self attention per una frase.}
+    \caption{Visualizzazione grafica della self-attention per una frase.}
     \label{fig:attention-rel}
 \end{figure}
 
@@ -1320,7 +1319,7 @@ Dopo che l'output di tutti i decoder è stato elaborato, abbiamo una serie di ve
     \item Il layer \emph{Softmax} converte gli score prodotti dal layer Linear in probabilità, selezionando l'output basato sulla cella con la probabilità più alta.
 \end{itemize}
 
-In conclusione l'architettura a Transformers complessiva e ad alto livello è rappresentata graficamente in figura \ref{fig:transformer}.
+In conclusione l'architettura Transformer complessiva e ad alto livello è rappresentata graficamente in figura \ref{fig:transformer}.
 
 \begin{figure} 
     \centering
@@ -1361,7 +1360,7 @@ In conclusione l'architettura a Transformers complessiva e ad alto livello è ra
 
 
 
-\chapter{Analisi dei dati raccolti}\label{cap:analisi_dati}
+\chapter{SciLay}\label{cap:analisi_dati}
 
 Questo capitolo tratterà in maniera preliminare le modalità con cui si è deciso di strutturare il dataset \emph{SciLay} creato. Questa panoramica serve da introduzione per contestualizzare il lavoro futuro, mentre i dettagli verranno affrontati nei capitoli successivi. 
 
@@ -1381,8 +1380,8 @@ Ciascuna delle $43,790$ istanze presenta la seguente struttura:
 \begin{itemize}
     \item \textbf{DOI}. Standard internazionale utilizzato per garantire l'identificazione duratura e univoca di oggetti digitali di varia natura. Il DOI è adottato per identificare ciascuna istanza del dataset prodotto, fornendo un collegamento diretto ai metadati associati all'articolo di riferimento.
     \item \textbf{PMCID}. Identificativo univoco all'interno del database di PMC (PubMed Central, libreria open access di PubMed). L'uso del PMCID facilita l'accesso e la navigazione all'interno di PMC, permettendo di localizzare specifici articoli senza necessariamente fare riferimento al DOI.
-    \item \textbf{Plain Text}. Questo campo corrisponde al lay summary, ovvero un riassunto accessibile e comprensibile dell'articolo in esame.
-    \item \textbf{Technical Text}. Si riferisce all'abstract dell'articolo, fornendo una sintesi tecnica dei contenuti presentati.
+    \item \textbf{Plain Summary}. Questo campo corrisponde al lay summary, ovvero un riassunto accessibile e comprensibile dell'articolo in esame.
+    \item \textbf{Technical Summary}. Si riferisce all'abstract dell'articolo, fornendo una sintesi tecnica dei contenuti presentati.
     \item \textbf{Full Text}. Rappresenta l'intero contenuto dell'articolo scientifico.
     \item \textbf{Journal}. Indica la rivista scientifica in cui l'articolo è stato pubblicato. Questa informazione fornisce uno sfondo sul contesto e la reputazione della fonte di ricerca. Si noterà che, in questa tesi, il dataset viene analizzato anche in base alle singole riviste di pubblicazione.
     \item \textbf{Topics}. Categorizzazione dell'articolo in base alla sua natura, come ad esempio se è una ricerca, una review o altri tipi di pubblicazioni.
@@ -1495,7 +1494,7 @@ In questo capitolo discuteremo le decisioni di design del nostro sistema, le sce
 Fin dal primo momento ci si è trovati di fronte alla sfida di eseguire esperimenti su modelli con una notevole complessità computazionale. 
 Al giorno d'oggi, infatti, anche i modelli di intelligenza artificiale più basilari richiedono una potenza di elaborazione che solo GPU di alta qualità possono fornire.
 A questo proposito il professor Moro ha generosamente offerto l'accesso al suo server, garantendomi una capacità di calcolo che non avrei potuto ottenere altrimenti.
-Il server dispone infatti di sei NVIDIA GeForce GTX 3090 da 24GiB di VRAM e altre GeForce GTX TITAN XP da 12GiB di VRAM.
+Il server dispone infatti di sei NVIDIA GeForce GTX 3090 da 24GB di VRAM e altre GeForce GTX TITAN XP da 12GB di VRAM.
 
 Data la posizione fisica remota del server e il fatto che sia condiviso con altri tesisti e ricercatori, si è resa necessaria una gestione accurata delle risorse in un contesto di utilizzo condiviso. Queste considerazioni hanno guidato l'adozione di tecnologie come:
 \begin{itemize}
@@ -1520,7 +1519,7 @@ Come anticipato, una delle principali differenze fra un sistema di containerizza
     \tiny{Fonte: https://images.contentstack.io/v3/assets/blt300387d93dabf50e/bltb6200bc085503718/5e1f209a63d1b6503160c6d5/containers-vs-virtual-machines.jpg}
 \end{figure}
 
-Questa semplice differenza comporta una serie di vantaggi risultati essenziali, fra i principali si riportano
+Questa semplice differenza comporta una serie di vantaggi risultati essenziali, fra i principali si riportano:
 
 \begin{itemize}
     \item \emph{Leggerezza}. I container condividono lo stesso sistema operativo (OS) host, mentre ogni VM ha il proprio sistema operativo completo. Questo significa che i container tendono a utilizzare meno risorse rispetto alle VM.
@@ -1534,7 +1533,7 @@ Questa semplice differenza comporta una serie di vantaggi risultati essenziali, 
 \subsubsection{Isolamento e Riproducibilità}
 Le due caratteristiche di fondamentale importanza per lo svolgimento di questo progetto sono l'\emph{isolamento} e la \emph{riproducibilità}. Poiché il cluster condiviso di GPU poneva il problema di mantenere dei blocchi funzionali indipendenti dal nodo in uso, che contenessero tutto il necessario per poter eseguire del codice di deep learning, Docker si è rivelato di vitale importanza. In particolare poiché fornisce
 \begin{itemize}
-    \item \emph{Ambienti di lavoro isolati}. Docker consente di creare contenitori che funzionano in modo isolato dal sistema host e dagli altri contenitori,garantendo che le risorse, come la CPU, la memoria e la GPU, assegnate a un contenitore non interferiscano con altri contenitori o con il sistema host. In un ambiente clusterizzato, ciò è essenziale per garantire che ogni job riceva le risorse di cui ha bisogno senza conflitti.
+    \item \emph{Ambienti di lavoro isolati}. Docker consente di creare contenitori che funzionano in modo isolato dal sistema host e dagli altri contenitori, garantendo che le risorse, come la CPU, la memoria e la GPU, assegnate a un contenitore non interferiscano con altri contenitori o con il sistema host. In un ambiente clusterizzato, ciò è essenziale per garantire che ogni job riceva le risorse di cui ha bisogno senza conflitti.
     \item \emph{Riproducibilità}. Una delle sfide principali nella ricerca scientifica è assicurarsi che gli esperimenti siano riproducibili. Grazie alle immagini Docker, è possibile specificare esattamente quali software, librerie e versioni sono necessarie. Questo significa che, fornendo il container (o l'\emph{immagine} da cui crearlo), l'ambiente di esecuzione rimarrà lo stesso indipendentemente dall'host sul quale viene eseguito, garantendo così la riproducibilità degli esperimenti.
 
     \item \emph{Gestione delle dipendenze}. In un contesto di sperimentazione di baseline di abstractive summarization è essenziale scegliere le dipendenze (nonché le versioni) giuste. Docker consente di semplificare questa gestione. Ad esempio, se il progetto richiedeva una versione specifica di una libreria per la GPU o una particolare versione di una libreria di elaborazione del linguaggio naturale, queste potevano essere specificate nel \emph{Dockerfile}. Questo ha eliminato i problemi derivanti dall'avere versioni diverse delle dipendenze installate su nodi diversi del cluster.
@@ -1574,7 +1573,7 @@ Oltre a questo, volendo provare i \emph{Large Language Models (LLM)} più recent
             
             % Associazioni
             \draw (dockerfile.south) -- node[right, very near start] {1} node[right, very near end] {0..*} node[left, midway] {build} (immagine.north);
-            \draw (immagine.south) -- node[right, very near start] {1} node[right, very near end] {0..1} node[left, midway] {run} (container.north);
+            \draw (immagine.south) -- node[right, very near start] {1} node[right, very near end] {0..*} node[left, midway] {run} (container.north);
         \end{tikzpicture}
     \end{minipage}
 
@@ -1684,7 +1683,7 @@ Considerando la vastità di tecniche astrattive, come discusso nel capitolo \ref
 In questo contesto, l'architettura Transformer si è distinta come soluzione promettente. Questi modelli non solo superano i modelli RNN in termini di accuratezza, ma hanno anche dimostrato di essere particolarmente efficaci nell'analisi di testi lunghi, grazie alla loro capacità di comprendere relazioni a distanza nel testo. Di conseguenza, la scelta è stata quella di basare il nostro sistema esclusivamente su questa architettura.
 
 \section{Scelte di modellazione}
-Per i nostri esperimenti sono state utilizzate delle \emph{baseline astrattive}. Questo significa che sono stati selezionati i modelli più promettenti disponibili in letteratura senza effettuare fine-tuning degli iperparametri. La descrizione dei modelli è stata categorizzata in base alla loro architettura sottostante ma sono tutti accomunati dall'utilizzo di transformers piuttosto che RNN.
+Per i nostri esperimenti sono state utilizzate delle \emph{baseline astrattive}. Questo significa che sono stati selezionati i modelli più promettenti disponibili in letteratura.. La descrizione dei modelli è stata categorizzata in base alla loro architettura sottostante ma sono tutti accomunati dall'utilizzo di transformers piuttosto che RNN.
 
 \subsection{Modelli Seq2Seq con Attention}
 I modelli Seq2Seq con Attention sono stati ampiamente descritti nel capitolo \ref{cap:tecnologie}. Tra questi, i più noti sono 
@@ -1810,17 +1809,19 @@ Nel contesto di questo progetto si sono utilizzate BLEU-1, BLEU-2, BLEU-3 e BLEU
 
 \subsection{R}
 
-È una metrica utilizzata per avere un valore numerico riassuntivo delle varie ROUGE. Nello specifico rappresenta una media ponderata delle metriche ROUGE, dove la varianza delle metriche ROUGE viene utilizzata come fattore di ponderazione per dare maggiore peso alle metriche con minore varianza. Infatti se una metrica ha una varianza inferiore, significa che è più stabile o consistente attraverso differenti esempi. Dare maggiore importanza alle metriche con minore varianza potrebbe contribuire a ottenere una valutazione più affidabile e meno influenzata da outlier o fluttuazioni casuali nei dati.
-Poiché è una metrica non nota in letteratura, di seguito è riportata la formula utilizzata
+Intrdotta nell'articolo \cite{DBLP:conf/aaai/MoroRV23}, è una metrica utilizzata per avere un valore numerico riassuntivo delle varie ROUGE. Nello specifico rappresenta una media ponderata delle metriche ROUGE, dove la varianza delle metriche ROUGE viene utilizzata come fattore di ponderazione per dare maggiore peso alle metriche con minore varianza. Infatti se una metrica ha una varianza inferiore, significa che è più stabile o consistente attraverso differenti esempi. Dare maggiore importanza alle metriche con minore varianza potrebbe contribuire a ottenere una valutazione più affidabile e meno influenzata da outlier o fluttuazioni casuali nei dati.
+Di seguito è riportata la formula utilizzata per calcolarla:
 \begin{equation*}
-    R = \frac{\text{mean}(\text{ROUGE-1,ROUGE-2,ROUGE-L})}{1+\text{var}(\text{ROUGE-1,ROUGE-2,ROUGE-L})}
+    \mathcal{R} = \frac{\mathcal{A}(r_1, r_2, r_L)}{1+\sigma_r^2}
 \end{equation*}
 
 dove, dato un set di valori $(x_1, x_2, \dots, x_n)$ media e varianza sono definite come segue
 \begin{align*}
-    \text{mean}(x_1, x_2, \dots, x_n) &= \frac{1}{n} \sum_{i=1}^n x_i \\
-    \text{var}(x_1, x_2, \dots, x_n) &= \frac{1}{n} \sum_{i=1}^n (x_i - \text{mean}(x_1, x_2, \dots, x_n))^2
+    \mathcal{A}(x_1, x_2, \dots, x_n) &= \frac{1}{n} \sum_{i=1}^n x_i \\
+    \sigma^2 &= \frac{1}{n} \sum_{i=1}^n \mathcal{A}(x_i - (x_1, x_2, \dots, x_n))^2
 \end{align*}
+
+Con questa definizione $\mathcal{R} \in [0,1]$. Nei risultati mostrati nel capitolo \ref{cap:sviluppo}, per normalizzare questa metrica alle altre (cioè avere lo stesso ordine di grandezza), le metriche $r_1,r_2,r_L$ al denominatore vengono divise per 100.
 
 \subsection{Bert Score}
 Metrica importante per poter ottenere un valore numerico che esprima la vicinanza semantica del riassunto generato e quello di riferimento. 
@@ -1841,7 +1842,7 @@ L'idea generale dietro questo approccio è che i modelli addestrati a convertire
 La \emph{Similarità Coseno} è una misura di similarità tra due vettori in uno spazio multidimensionale. Può essere usata nel contesto dell'NLP per comparare la similarità tra documenti rappresentati come vettori. 
 Come descritto nel Capitolo \ref{cap:tecnologie} è possibile convertire ogni parola in un vettore che preservi la sua semantica. Questo consente di poter fare operazioni vettoriali che si riflettano sulle parole stesse. 
 
-Dati due generici vettori $\mathbf{x}, \mathbf{y}$, la loro similarità si calcola sommando i prodotti sclari dei vettori (sommando i prodotti di coppie di componenti) e dividendo questa quantità per le rispettive norme, cioè
+Dati due generici vettori $\mathbf{x}, \mathbf{y}$, la loro similarità si calcola sommando i prodotti scalari dei vettori (sommando i prodotti di coppie di componenti) e dividendo questa quantità per le rispettive norme, cioè
 \begin{equation}
     \label{eq:cossim}
     \text{Cosine Similarity} = \frac{\mathbf{x \cdot y}}{\vert \vert \mathbf{x} \vert \vert \vert \vert \mathbf{y} \vert \vert} = 
@@ -1860,20 +1861,18 @@ I benefici di lavorare sugli angoli come fa, appunto, la \emph{similarità cosen
 \subsection{Mean Generation Length}
 La \emph{Mean Generation Length} (MGL) è una metrica utilizzata per valutare la lunghezza media delle sequenze o dei testi generati da un modello di generazione del linguaggio naturale. Questa metrica può fornire insight utili sull'abilità di un modello di generare risposte concise o, al contrario, su quanto tende a generare risposte prolisse.
 
-Dato un insieme di $n$ documenti generati, denotati come $\text{prediction}_i$ per $i \in [1,n]$, la MGL è calcolata come segue 
+Dato un insieme di $n$ documenti generati, denotati come $\text{prediction}_i$ per $i \in [1,n]$, la MGL è calcolata come segue:
 
 \begin{equation*}
     \text{MGL} = \frac{1}{n} \sum_{i=1}^n \text{len}(\text{prediction}_i)
 \end{equation*}
 
-\subsection{Valutazione Umana}
-In generale il gold standard per la valutazione di riassunti rimane quella umana. Questa può essere effettuata ponendo particolare attenzione a diverse prospettive. Le più rilevanti per questo progetto sono riportate di seguito
-\begin{enumerate}
-    \item \emph{Informatività}. Quanto bene il testo generato cattura le idee chiave del testo originale. Questo è particolarmente importante in ottica di summarization in quanto il riassunto deve veicolare tutte le informazioni rilevanti dell'articolo originale. 
-    \item \emph{Fattualità}. Verifica se l'ipotesi generata contiene solo affermazioni deducibili dal testo sorgente. Per un riassunto è importante trattare concetti che siano estrapolabili dall'articolo originale, altrimenti perderebbero di significato.
-    \item \emph{Copertura Semantica}. Misura quante unità di contenuto semantico dai testi di riferimento sono coperte dal riassunto generato. Come vedremo, poiché gli articoli originali sono molto lunghi, è necessario troncarli prima di fornirli ai modelli, causando un'irreversibile perdita d'informazione. Oltre a questo il riassunto dev'essere notevolmente più breve dell'input, dunque occorre valutare qauli concetti sono stati inclusi e quali no.
-\end{enumerate}
-
+\subsection{Carburacy}
+Altra metrica introdotta nel paper \cite{DBLP:conf/aaai/MoroRV23}, il cui scopo è attribuire un punteggio al modello basandosi non solo sulle sue prestazioni effettive, ma anche sull'impatto ambientale che il suo addestramento richiede. Nello specifico, \emph{carburacy} indicato con $\Upsilon$, dipenderà dal punteggio $\mathcal{R}$ ottenuto (direttamente), e dal costo $\mathcal{C}$ richiesto dal modello per ottenere quel punteggio (inversamente). La formula è la seguente
+\begin{equation*}
+    \Upsilon = \frac{e^{\log_\alpha \mathcal{R}}}{1 + \mathcal{C} \cdot \beta}
+\end{equation*}
+in cui $\alpha \geq 0, \beta \geq 0$ sono iperparametri necessari a bilanciare rispettivamente le prestazioni e il costo.
 
 
 
@@ -1921,9 +1920,8 @@ Come anticipato,  dopo aver individuato le fonti per l'estrazione dei documenti,
     \item \emph{Leggibilità}. Mentre un file \texttt{CSV} definisce il ruolo di ciascuna colonna solo nella prima riga e separa i campi con punti e virgola, spazi, ecc., il formato \texttt{jsonlines} scelto, come illustrato nel Listato \ref{lst:jsonlines}, permette di identificare immediatamente tutti i campi di ogni istanza con una rapida occhiata.
 \end{itemize}
 
-\begin{lstlisting}[language=json, 
-                   caption=Formato jsonlines articoli.,
-                   label=lst:jsonlines]
+\begin{customcode}
+\begin{mintedbox}{json}
 {
     "doi": "10.1038/s41467-020-16904-3", 
     "pmcid": "PMC7308400",  
@@ -1933,57 +1931,53 @@ Come anticipato,  dopo aver individuato le fonti per l'estrazione dei documenti,
     "journal": "nature communications", 
     "topics": [ "Article" ], 
     "keywords": [ "RNA sequencing", "Computational models", "Software" ]
-}
-\end{lstlisting}
+}    
+\end{mintedbox}
+\caption{Formato jsonlines articoli.}
+\label{lst:jsonlines}
+\end{customcode}
 
 Poiché non tutti i documenti scaricati presentavano la struttura desiderata (dunque integrassero un summary), si è dovuto fare parsing di questi alla ricerca di tale campo. 
 Posto che alcuni documenti possedessero tale riassunto, non tutti utilizzavano lo stesso tag per identificarlo all'interno del \emph{DOM} (Document Object Model). Per questo motivo si è reso necessario un approccio ad'hoc per ogni tipologia di tag identificato a seguito di un'ispezione manuale. 
 
-Di seguito sono riportate le strutture più frequentemente utilizzate per definire tali riassunti 
+Di seguito sono riportate le strutture più frequentemente utilizzate per definire tali riassunti.
 
 %% PER PMC010xxxxxx, PMC008xxxxxx
-\begin{lstlisting}[language=xml, caption=Struttura XML di un summary., label=lst:xml-pmc10-8]
+\begin{customcode}
+\begin{mintedbox}{xml}
 <sec title="Simple Summary">
   <!-- Contenuto del summary -->
 </sec>
-\end{lstlisting}
 
-%% PER PMC009xxxxxx
-\begin{lstlisting}[language=xml, caption=Struttura XML di un summary., label=lst:xml-pmc9]
 <abstract abstract-type="summary">
   <!-- Contenuto del summary -->
 </abstract>
-\end{lstlisting}
 
-%% PER PMC005xxxxxx
-\begin{lstlisting}[language=xml, caption=Struttura XML di un summary., label=lst:xml-pmc5]
 <abstract abstract-type="executive-summary">
   <!-- Contenuto del summary -->
 </abstract>
-\end{lstlisting}
 
-%% PER PMC007xxxxxx
-\begin{lstlisting}[language=xml, caption=Struttura XML di un summary., label=lst:xml-pmc7]
 <abstract id="Abs">
   <!-- Contenuto del summary -->
 </abstract>
-\end{lstlisting}
+\end{mintedbox}
+\caption{Struttura XML di un summary.}
+\label{lst:xml-pmc10-8}
+\end{customcode}
 
 
 Per fare parsing dei documenti \texttt{XML} si è deciso di utilizzare il modulo \href{https://docs.python.org/3/library/xml.html}{\texttt{xml.etree.ElementTree}} di Python che offre un'API semplice da usare e molto efficiente. 
 
-In particolare è stato utilizzato il seguente script per estrarre una stringa in formato json per ciascun documento il cui summary è nel formato \ref{lst:xml-pmc10-8}.
+In particolare è stato utilizzato script \ref{lst:py-pmc10-8} per estrarre una stringa in formato json per ciascun documento il cui summary è nel formato \texttt{<sec title=``Simple Summary''>}.
 
-
-\begin{python}[caption={Script Python per parsing della sezione `Simple Summary'.}, label={lst:py-pmc10-8}]
+\begin{customcode}
+\begin{mintedbox}{python}
 import xml.etree.ElementTree as ET
 
 def retrieve_simple_summary(xml_file):
-    # Parse the XML file
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    # Find the "Simple Summary" section
     summary_section = root.find(".//sec[title='Simple Summary']")
     summary_content = ""
     if summary_section is not None:
@@ -1991,21 +1985,23 @@ def retrieve_simple_summary(xml_file):
         summary_content = " ".join(summary_content.split()).strip() 
     
     return summary_content
-\end{python}
+\end{mintedbox}
+\caption{Script Python per parsing della sezione `Simple Summary'.}
+\label{lst:py-pmc10-8}
+\end{customcode}
 
 Il codice presentato è molto semplificato e non tiene conto di tutti gli altri campi estratti, per i quali occorrerebbe fare un ragionamento analogo a quello dei summary, in quanto anch'essi non aventi struttura consistente su tutti i documenti.
 
-Si è proceduto analogamente per la tipologia \ref{lst:xml-pmc9} con il seguente codice 
+Si è proceduto in maniera analoga per la tipologia di summary nel formato \texttt{<abstract abstract-type=``summary''>} con il codice listato a \ref{lst:py-pmc9}.
 
-\begin{python}[caption={Python script per estrarre l'abstract di tipo 'summary'.}, label={lst:py-pmc9}]
+\begin{customcode}
+\begin{mintedbox}{python}
 import xml.etree.ElementTree as ET
 
 def retrieve_summary_abstract(xml_file):
-    # Parse the XML file
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    # Extract content from the 'summary' type abstract
     summary_abstract = root.find(".//abstract[@abstract-type='summary']")
     summary_content = ""
     if summary_abstract is not None:
@@ -2013,7 +2009,12 @@ def retrieve_summary_abstract(xml_file):
         summary_content = " ".join(summary_content.split()).strip() 
 
     return summary_content
-\end{python}
+\end{mintedbox}
+\caption{Python script per estrarre l'abstract di tipo `summary'.}
+\label{lst:py-pmc9}
+\end{customcode}
+
+Il processo è stato ripetuto in maniera similare per tutte le altre tipologie di XML, non vengono riportate per ragioni tipografiche.
 
 \section{Preprocessamento}
 
@@ -2053,9 +2054,10 @@ Dall'analisi emerge che, delle 46486 istanze raccolte, 44142 sono uniche. Ulteri
 Una volta corrette le anomalie nei dati, l'attenzione si è spostata sull'analisi statistica del dataset, con un occhio di riguardo verso la rilevazione di \emph{outliers}, ovvero quelle istanze che si discostano significativamente dalla norma.
 
 \subsection{Distribuzione per Rivista Scientifica}
-Per meglio comprendere la composizione del dataset e facilitarne il caricamento su HuggingFace, suddiviso per rivista, si è stimata la distribuzione delle istanze per ciascuna pubblicazione. Utilizzando il codice Python riportato di seguito, sono state filtrate e visualizzate solo le riviste che rappresentano più dell'1\% del totale, assegnando le altre alla categoria ``Others''.
+Per meglio comprendere la composizione del dataset e facilitarne il caricamento su HuggingFace, suddiviso per rivista, si è stimata la distribuzione delle istanze per ciascuna pubblicazione. Utilizzando il codice Python riportato nel listato \ref{lst:py-distrib-riv}, sono state filtrate e visualizzate solo le riviste che rappresentano più dell'1\% del totale, assegnando le altre alla categoria ``Others''.
 
-\begin{python}[caption={Codice Python per graficare la distribuzione delle riviste.}, label={lst:py-distrib-riv}]
+\begin{customcode}
+\begin{mintedbox}{python}
 journal_counts = articles["journal"].value_counts()
 
 filtered_journal_counts = journal_counts[journal_counts / journal_counts.sum() > 0.01]
@@ -2069,8 +2071,11 @@ filtered_article_counts = articles["journal"].value_counts()
 plt.figure(figsize=(10, 10))
 filtered_article_counts.plot.pie(autopct='%1.1f%%')
 plt.axis('equal')
-plt.show()
-\end{python}
+plt.show()    
+\end{mintedbox}
+\caption{Codice Python per graficare la distribuzione delle riviste.}
+\label{lst:py-distrib-riv}
+\end{customcode}
 
 Questo approccio ha prodotto il grafico a torta in Figura \ref{fig:journal-inst-perc}, che illustra la percentuale di istanze per ciascuna rivista. La decisione di escludere le riviste con meno dell'1\% delle istanze è stata presa per evitare di avere split del dataset con un numero insufficiente di dati, garantendo così una rappresentazione equilibrata.
 
@@ -2081,9 +2086,10 @@ Per valutare la dimensione degli attributi pertinenti agli esperimenti, sono sta
 \subsubsection{Frequenza del numero di caratteri}
 L'analisi è iniziata esaminando la lunghezza dei testi, misurata dal numero di caratteri per le sezioni \texttt{plain\_text}, \texttt{technical\_text} e \texttt{full\_text}. Si è prodotto un grafico congiunto per i primi due e un grafico separato per il testo completo, a causa delle loro diverse dimensioni.
 
-Il codice utilizzato per visualizzare la distribuzione della lunghezza degli articoli è il seguente:
+Il codice utilizzato per visualizzare la distribuzione della lunghezza degli articoli è mostrato nel listato \ref{lst:py-plt-hist}.
 
-\begin{python}[caption={Python script per visualizzare le distribuzioni di frequenza delle lunghezze degli articoli.}, label={lst:py-plt-hist}]
+\begin{customcode}
+\begin{mintedbox}{python}
 import matplotlib.pyplot as plt
 
 plain_text_lengths = articles["plain_text"].str.len()
@@ -2092,35 +2098,36 @@ technical_text_lengths = articles["technical_text"].str.len()
 plt.figure(figsize=(10, 5))
 
 plt.hist(plain_text_lengths, bins=100, alpha=0.5, label="Plain Text")
-
 plt.hist(technical_text_lengths, bins=100, alpha=0.5, label="Technical Text")
 
 plt.title("Summary and Technical Text Length Distribution")
 plt.xlabel("Length")
 plt.ylabel("Frequency")
 plt.legend()
-
 plt.xlim(0, 20000) 
 plt.xticks(range(0, 20001, 4000)) 
 
 plt.show()
-\end{python}
-Gli istogrammi risultanti mostrano che il \texttt{technical\_text} presenta una notevole varianza, con molti valori anomali che vanno da 4000 a 20000 caratteri, mentre il \texttt{plain\_text} appare più omogeneo. Il \texttt{full\_text}, invece, evidenzia alcuni valori anomali con oltre 10000 caratteri.
+\end{mintedbox}
+\caption{Python script per visualizzare le distribuzioni di frequenza delle lunghezze degli articoli.}
+\label{lst:py-plt-hist}
+\end{customcode}
+
+Gli istogrammi risultanti mostrano che il \texttt{technical\_text} presenta una notevole varianza, con molti valori anomali che vanno da 4000 a 20000 caratteri, mentre il \texttt{plain\_text} appare più omogeneo. Il \texttt{full\_text}, invece, evidenzia alcuni valori anomali con oltre 100000 caratteri.
 Le distribuzioni ottenute sono mostrate in Figure \ref{fig:hist_tech_plain} per technical e plain, e \ref{fig:hist_full} per full.
+
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.89\textwidth}
-        \includegraphics[width=\textwidth]{images/sum_tech_length_distrib.png}
-        \caption{Frequenza numero di caratteri per plain e technical text.}
-        \label{fig:hist_tech_plain}
-    \end{subfigure}
-\quad
-    \begin{subfigure}[b]{0.85\textwidth}
-        \includegraphics[width=\textwidth]{images/full_length_distrib.png}
-        \caption{Frequenza numero di caratteri per full text.}
-        \label{fig:hist_full}
-    \end{subfigure}
-    \caption{Istogrammi per il numero di caratteri.}
+    \includegraphics[width=0.75\textwidth]{images/sum_tech_length_distrib.png}
+    \caption{Frequenza numero di caratteri per plain e technical text.}
+    \label{fig:hist_tech_plain}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/full_length_distrib.png}
+    \caption{Frequenza numero di caratteri per full text.}
+    \label{fig:hist_full}
 \end{figure}
 
 
@@ -2140,22 +2147,29 @@ Full Text       & 7615.55 \\ \hline
 \label{tab:avg_word_count}
 \end{table}
 
-Il codice impiegato è il seguente
+Il codice impiegato è visibile nel listato \ref{lst:py-tok-word-count}.
 
-\begin{python}[caption={Tokenizzazione delle istanze e calcolo dei valori medi.}, label={lst:py-tok-word-count}]
+\begin{customcode}   
+\begin{mintedbox}{python}
 from nltk.tokenize import word_tokenize
 nltk.download('punkt')
+
 articles['plain_word_count'] = articles['plain_text'].apply(lambda text: len(word_tokenize(text)))
 articles['technical_word_count'] = articles['technical_text'].apply(lambda text: len(word_tokenize(text)))
 articles['full_word_count'] = articles['full_text'].apply(lambda text: len(word_tokenize(text)))
+
 print(articles['plain_word_count'].mean(),
        articles['technical_word_count'].mean(),
        articles['full_word_count'].mean())
-\end{python}
+\end{mintedbox}
+\caption{Tokenizzazione delle istanze e calcolo dei valori medi.}
+\label{lst:py-tok-word-count}
+\end{customcode}
 
-Per una visualizzazione dettagliata, si sono poi generati istogrammi per il conteggio delle parole utilizzando un codice simile a quello precedentemente descritto. Questi istogrammi hanno confermato i problemi individuati con il \texttt{technical\_text}, rivelando un numero significativo di outliers con un conteggio parole che oscilla tra 1000 e 3200, a dispetto di una media di circa 238 parole. Analogamente, l'analisi del \texttt{full\_text} ha svelato alcune istanze sotto i 1000 caratteri e altre che eccedevano i 20000, sebbene in minor numero.
+Per una visualizzazione dettagliata, si sono poi generati istogrammi per il conteggio delle parole utilizzando un codice simile a quello precedentemente descritto (nel listato \ref{lst:py-freq-par}). Questi istogrammi hanno confermato i problemi individuati con il \texttt{technical\_text}, rivelando un numero significativo di outliers con un conteggio parole che oscilla tra 1000 e 3200, a dispetto di una media di circa 238 parole. Analogamente, l'analisi del \texttt{full\_text} ha svelato alcune istanze sotto le 1000 parole e altre che eccedevano le 20000, sebbene in minor numero.
 
-\begin{python}[caption={Script per graficare le distribuzioni di frequenza del numero di parole.}, label={lst:py-freq-par}]
+\begin{customcode}
+\begin{mintedbox}{python}
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(10, 5))
@@ -2173,26 +2187,26 @@ plt.xlim(0, 4000)
 plt.xticks(range(0, 4001, 400))
 
 plt.show()
-\end{python}
+\end{mintedbox} 
+\caption{Script per graficare le distribuzioni di frequenza del numero di parole.}
+\label{lst:py-freq-par}
+\end{customcode}
 
 Come nel caso precedente, si è scelto di presentare un unico script per prevenire ridondanze. Dai grafici risultanti, illustrati nelle Figure \ref{fig:hist_tech_plain_word} per il testo semplice e tecnico e nella Figura \ref{fig:hist_full_word} per il testo completo, emergono le distribuzioni di interesse.
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.89\textwidth}
-        \includegraphics[width=\textwidth]{images/sum_tech_wc_distrib.png}
-        \caption{Frequenza numero di parole per plain e technical text.}
-        \label{fig:hist_tech_plain_word}
-    \end{subfigure}
-\quad
-    \begin{subfigure}[b]{0.85\textwidth}
-        \includegraphics[width=\textwidth]{images/full_text_wc_distrib.png}
-        \caption{Frequenza numero di parole per full text.}
-        \label{fig:hist_full_word}
-    \end{subfigure}
-    \caption{Istogrammi per il numero di parole.}
+    \includegraphics[width=0.75\textwidth]{images/sum_tech_wc_distrib.png}
+    \caption{Frequenza numero di parole per plain e technical text.}
+    \label{fig:hist_tech_plain_word}
 \end{figure}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/full_text_wc_distrib.png}
+    \caption{Frequenza numero di parole per full text.}
+    \label{fig:hist_full_word}
+\end{figure}
 
 \subsubsection{Coverage Density e Compression degli articoli}
 Fino a questo momento ci si è concentrati su caratteristiche inerenti alle varie sezioni prese singolarmente. Un altro fattore molto importante da valutare è anche la relazione che intercorre fra le sezioni di \texttt{technical\_text}, \texttt{plain\_text} e \texttt{full\_text}. In particolare si è deciso di considerare
@@ -2214,7 +2228,7 @@ Fino a questo momento ci si è concentrati su caratteristiche inerenti alle vari
     Valori di compressione alti potrebbero indicare che il testo sorgente sia notevolmente più lungo del target, che dunque potrebbe risultare poco rappresentativo. Viceversa, valori inferiori a 1 vorrebbero dire che il target sia inspiegabilmente più lungo del riferimento.
 \end{itemize}
 
-Nella tabella \ref{tab:cov_dens_compr} è riportato il valore medio per ogni metrica. Si nota che coverage e density risulta di fatto equivalente fra technical e plain, probabilmente dovuto al fatto che in entambi vi è lo stesso quantitativo di sequenze di parole identiche. Da notare, invece, che la compression è oltre il doppio per plain rispetto a technical, questo fa capire come tipicamente il technical text sia di dimensione molto più elevata rispetto al plain.
+Nella tabella \ref{tab:cov_dens_compr} è riportato il valore medio per ogni metrica. Si nota che coverage e density risulta di fatto equivalente fra technical e plain, probabilmente dovuto al fatto che in entrambi vi è lo stesso quantitativo di sequenze di parole identiche. Da notare, invece, che la compression è oltre il doppio per plain rispetto a technical, questo fa capire come tipicamente il technical text sia di dimensione molto più elevata rispetto al plain.
 
 
 \begin{table}
@@ -2236,37 +2250,39 @@ Oltre a questo, sono state graficate tramite istogrammi le distribuzioni di cias
 
 
 
-\subsection{Rimozione degli outliers}
+\section{Rimozione degli outliers}
 Come anticipato, dai grafici in Figura \ref{fig:hist_tech_plain_word}, \ref{fig:hist_full_word}, emergono degli \emph{outliers} con numero di parole anomale rispetto alla media, sia per \texttt{technical\_text} che per \texttt{full\_text}. 
 
 Affinché il dataset sia coerente ed omogeneo, si è deciso di scartare questi valori anomali optando per lasciare solo quelli il cui numero di parole non superi le 800 per summary e technical (in quanto le loro frequenze sono quasi equivalenti). Per quanto riguarda full si sono tenute le istanze con parole comprese fra 1000 e 20000.
 
 Le Figure \ref{fig:hist_tech_plain_word_outliers} e \ref{fig:hist_full_word_outliers} mostrano graficamente i valori che sono stati scartati.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/hist_wc_outliers.png}
+    \caption{Outliers per plain e technical.}
+    \label{fig:hist_tech_plain_word_outliers}
+\end{figure}
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.89\textwidth}
-        \includegraphics[width=\textwidth]{images/hist_wc_outliers.png}
-        \caption{Outliers per plain e technical.}
-        \label{fig:hist_tech_plain_word_outliers}
-    \end{subfigure}
-\quad
-    \begin{subfigure}[b]{0.85\textwidth}
-        \includegraphics[width=\textwidth]{images/hist_wc_outliers_full.png}
-        \caption{Outliers per full text.}
-        \label{fig:hist_full_word_outliers}
-    \end{subfigure}
-    \caption{Visualizzazione degli outliers.}
+    \includegraphics[width=0.75\textwidth]{images/hist_wc_outliers_full.png}
+    \caption{Outliers per full text.}
+    \label{fig:hist_full_word_outliers}
 \end{figure}
 
-Per farlo si è impiegato il seguente codice che consente, grazie alla potenza di \texttt{Pandas}, di scartare tutte le istanze indesiderate in una sola volta.
 
-\begin{python}[caption={Script per rimozione outliers per numero di parole.}, label={lst:py-rimuovi-outliers}]
+Per farlo si è impiegato il codice mostato nel listato \ref{lst:py-rimuovi-outliers} che consente, grazie alla potenza di \texttt{Pandas}, di scartare tutte le istanze indesiderate in una sola volta.
+
+\begin{customcode}
+\begin{mintedbox}{python}
 articles = articles[(articles["technical_text_word_count"] <= 800) & 
-                     (articles["plain_text_word_count"] <= 800) &
-                     (articles["full_text"] >= 1000) &
-                     (articles["full_text"] <= 20000)]
-\end{python}
+                    (articles["plain_text_word_count"] <= 800) &
+                    (articles["full_text"] >= 1000) &
+                    (articles["full_text"] <= 20000)]
+\end{mintedbox}
+\caption{Script per rimozione outliers per numero di parole.}
+\label{lst:py-rimuovi-outliers}
+\end{customcode}
 
 
 Questo ha portato a delle distribuzioni più significative che, se plottate, mostrano in maniera più chiara con che frequenza compaino gli articoli aventi un certo numero di parole. Queste sono visibili in Figura \ref{fig:updated_hist_wc} per plain e tecnhnical. Per \texttt{full\_text} non è mostrata poiché molto simile a \ref{fig:hist_full_word}.
@@ -2279,33 +2295,38 @@ Questo ha portato a delle distribuzioni più significative che, se plottate, mos
 \end{figure}
 
 
-Fatto ciò si sono rimosse le istanze che avessero compression oltre un limite soglia definito su 400 per plain e 135 per technical. Graficamente si vede in Figura \ref{fig:hist_compression_plain}, \ref{fig:hist_compression_tech}.
+Fatto ciò si sono rimosse le istanze che avessero compression oltre un limite soglia definito su 400 per plain e 135 per technical. Graficamente si vede nelle Figure \ref{fig:hist_compression_plain}, \ref{fig:hist_compression_tech}.
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.85\textwidth}
-        \includegraphics[width=\linewidth]{images/hist_compression_plain.png}
-        \caption{Outliers Compression Plain Text.}
-        \label{fig:hist_compression_plain}
-    \end{subfigure}
-\quad
-    \begin{subfigure}[b]{0.85\textwidth}
-        \includegraphics[width=\linewidth]{images/hist_compression_technical.png}
-        \caption{Outliers Compression Full Text.}
-        \label{fig:hist_compression_tech}
-    \end{subfigure}
-    \caption{Visualizzazione degli Outliers per Compression.}
+    \includegraphics[width=0.75\linewidth]{images/hist_compression_plain.png}
+    \caption{Outliers Compression Plain Text.}
+    \label{fig:hist_compression_plain}
 \end{figure}
 
-\subsection{Caricamento del dataset su HuggingFace}
-Pulito il dataset dalle istanze non desiderate, si è caricato il dataset su HuggingFace. Per fare questo si è usato come riferimento il dataset \href{https://huggingface.co/datasets/big_patent}{BigPatent}. Affinchè il dataset venga caricato correttamente è necessario disporre le istanze in file compressi (\texttt{.zip}) aventi come nome lo split di appartenenza (i.e. train, test, validation). All'interno di questi zip è stato necessario dividere le istanze in directory, una per ogni rivista. I file \texttt{.zip} devono poi essere inseriti nel percorso \texttt{data/version/}. Per fare questo si è impiegato il seguente codice che divide automaticamente i dati in train validation e test, in un rapporto 80, 10, 10 e li dispone nelle cartelle corrette.
-Per poter identificare quelle riviste che andassero sotto la categoria ``Others'' si è definito un dizionario con i nomi delle riviste mostrate in Figura \ref{fig:journal-inst-perc} (e le rispettive abbreviazioni). Tutte le istanze la cui rivista non rientrasse all'interno di questo dizionario venivano inserite appunto nella categoria ``Others''.
-Il codice è il seguente 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/hist_compression_technical.png}
+    \caption{Outliers Compression Full Text.}
+    \label{fig:hist_compression_tech}
+\end{figure}
 
-\begin{python}
+
+\section{Caricamento e Organizzazione del dataset su HuggingFace}
+Il dataset è stato pulito dalle istanze non desiderate e successivamente caricato su HuggingFace.
+Questo processo ha richiesto la creazione di codice specifico per consentire il caricamento efficace del dataset sul repository remoto. Inoltre, è stato sviluppato del codice aggiuntivo per abilitare gli utenti a scaricare il dataset tramite l'API di HuggingFace, fornendo loro la flessibilità di selezionare specifici sottoinsiemi di riviste da includere.
+
+\subsection{Caricamento del Dataset su HuggingFace}
+Questa fase è stata svolta prendendo come riferimento il dataset \href{https://huggingface.co/datasets/big_patent}{BigPatent}. Per un caricamento corretto, è necessario organizzare le istanze in file compressi (\texttt{.zip}) nominati in base allo split di appartenenza (ad esempio, train, test, validation). All'interno di ciascun file zip, le istanze sono state suddivise in directory specifiche per ogni rivista. Questi file \texttt{.zip} devono essere collocati nel percorso \texttt{data/version/}. Il codice utilizzato automatizza la divisione dei dati in train, validation e test secondo una proporzione del 80-10-10 e li distribuisce nelle appropriate cartelle.
+Per categorizzare le riviste sotto l'etichetta ``Others'', è stato creato un dizionario contenente i nomi delle riviste illustrate nella Figura \ref{fig:journal-inst-perc}, insieme alle relative abbreviazioni. Le istanze appartenenti a riviste non incluse in questo dizionario sono state allocate nella categoria ``Others''.
+
+Il codice utilizzato è riportato nel Listato \ref{lst:py_upload_hf}.
+
+\begin{customcode}
+\begin{mintedbox}{python}
 _VERSION = "1.0.0"
 
-_JOURNALS = { ... } 
+_JOURNALS = { ... }  
 
 def split_and_save(examples, journal_name):
     train, validate, test = np.split(examples.sample(frac=1, random_state=42), 
@@ -2313,7 +2334,6 @@ def split_and_save(examples, journal_name):
     for subset, kind in zip([train, validate, test], ['train', 'validation', 'test']):
         subdir = f"sci_lay/data/{_VERSION}/{kind}/{_JOURNALS.get(journal_name, 'OTHER')}"
         save_examples(subset.to_dict(orient="records"), subdir)
-    print(f"Journal '{journal_name}' correctly split into train/validation/test.")
 
 def save_examples(examples, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -2328,81 +2348,832 @@ for journal, examples in dataset.groupby("journal"):
         split_and_save(examples, journal.lower())
     else:
         others.append(examples)
-
 if others:
     other_examples = pd.concat(others, ignore_index=True)
     split_and_save(other_examples, 'OTHER')
+\end{mintedbox}
+\caption{Caricamento del dataset su HuggingFace.}
+\label{lst:py_upload_hf}
+\end{customcode}
 
-\end{python}
+\subsection{Personalizzazione dell'API Hugging Face per il Recupero di Dataset Specifici per Rivista}
+Per fare in modo che il dataset possa essere scaricato selezionando una specifica rivista, è necessario personalizzare l'API base che HuggingFace mette a disposizione degli utenti per fare download dei dataset. Nello specifico si voleva ottenere il comportamento mostrato nel Listato \ref{lst:hf_load_ds}, dove è sufficiente specificare versione e riviste da cui prendere gli articoli, per ottenere la parte richiesta.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+from datasets import load_dataset
+
+ds = load_dataset("paniniDot/sci_lay")  # default is 'all' journals
+ds = load_dataset("paniniDot/sci_lay", "all")  # the same as above
+ds = load_dataset("paniniDot/sci_lay", "NC")  # only 'NC' journal (Nature Communications)
+ds = load_dataset("paniniDot/sci_lay", journals=["NC", "A"]) #a subset of the whole dataset
+\end{mintedbox}
+\caption{Download di una specifica parte del dataset da HuggingFace.}
+\label{lst:hf_load_ds}
+\end{customcode}
+
+Per fare questo, nonostante la documentazione di HuggingFace non fosse molto chiara, si è sviluppata la classe \texttt{SciLayConfig}, una configurazione personalizzata per costruire un dataset all'interno del framework \texttt{datasets} di HF, appositamente realizzata per \emph{SciLay}. Questa classe estende \texttt{datasets.BuilderConfig} (si veda la doc relativa a \href{https://huggingface.co/docs/datasets/v2.14.5/en/package_reference/builder_classes}{HuggingFace Builder Classes}), che è una classe base usata per definire i parametri per la costruzione di un dataset.
+
+Questa classe è stata progettata per personalizzare il processo di caricamento o costruzione del dataset in modo che gli utenti possano specificare esattamente quali riviste (e quindi quali articoli) vogliono includere nel loro dataset, e in quale versione.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+import datasets
+
+_JOURNALS = { ... }
+
+_VERSION = "1.0.0"
+
+class SciLayConfig(datasets.BuilderConfig):
+    """BuilderConfig for SciLay."""
+
+    def __init__(self, journals="all", version=_VERSION, **kwargs):
+        """BuilderConfig for SciLay.
+        Args:
+            journals (str or list, default 'all'): List of journal names. Either 'all' or a combination of {'NC',..., 'OTHER'}.
+            **kwargs: keyword arguments forwarded to super.
+        """
+        if isinstance(journals, str):
+            journals = [journals]
+        name = "+".join(journals)
+        if name == "all":
+            journals = list(_JOURNALS) 
+        if version != _VERSION:
+            name = f"{name}-{version}"
+        super().__init__(name=name, version=version, **kwargs)
+        self.journals = journals
+\end{mintedbox}
+\caption{Classe SciLayConfig per ottenere i dataset divisi per rivista.}
+\end{customcode}
+
+Il passo successivo è stato quello di implementare una classe che si occupasse effettivamente di costruire il dataset. Questa classe, denominata \texttt{SciLay} estende \texttt{datasets.GeneratorBasedBuilder} pensato proprio per generare dataset a partire da un repository HuggingFace.
+Per la costruzione del dataset, questa classe fa uso di \texttt{SciLayConfig} andando a definire una serie di possibili configurazioni in \texttt{BUILDER\_CONFIGS}.
+
+La classe presenta tre metodi di utilità ereditati dalla superclasse che li definisce astratti. 
+\begin{enumerate}
+    \item \texttt{\_info(self)}. Restituisce un oggetto \texttt{DatasetInfo}, il quale incapsula tutte le informazioni del dataset, dunque features e loro tipi, descrizione del dataset, licenza, ecc.
+    \item \texttt{\_split\_generator(self, dl\_manager)}. Ritorna un generatore per ciascuno split del dataset (ad esempio, train, validation, test). Utilizza il gestore di download per scaricare e estrarre i dati dagli URL specificati, che sono formattati con la versione del dataset e il nome dello split. Restituisce una lista di oggetti \texttt{SplitGenerator} che contengono le informazioni per generare ciascuno split.
+    \item \texttt{\_generate\_examples(self, paths=None)}. Genera esempi del dataset. Itera attraverso i percorsi forniti e apre ogni file, legge ogni riga (che si presume sia un oggetto JSON) e produce un esempio del dataset. Ogni esempio è un dizionario che mappa i nomi delle caratteristiche ai loro valori.
+\end{enumerate}
+
+Il codice della classe è mostrato nel listato \ref{lst:py-scilay}.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+import json
+import os
+
+_SPLIT_NAMES = {datasets.Split.TRAIN: "train", datasets.Split.VALIDATION: "validation", datasets.Split.TEST: "test"}
+_URL = "data/{version}/{split_name}.zip"
+
+class SciLay(datasets.GeneratorBasedBuilder):
+    """SciLay datasets."""
+
+    BUILDER_CONFIG_CLASS = SciLayConfig
+    BUILDER_CONFIGS = [
+        SciLayConfig(journals="all", description="Articles from all journals."),
+    ] + [
+        SciLayConfig(journals=k, description=f"Articles from journals {k}: {v}")
+        for k, v in sorted(_JOURNALS.items())
+    ]
+    DEFAULT_CONFIG_NAME = "all"
+    VERSION = _VERSION
+
+    def _info(self):
+        return datasets.DatasetInfo(
+            description=_DESCRIPTION,
+            features=datasets.Features({
+                _DOI: datasets.Value("string"),
+                ...
+                _KEYWORDS: datasets.Sequence(datasets.Value("string"))
+            }),
+            supervised_keys=(_FULL_TEXT, _SUMMARY),
+            homepage=_HOMEPAGE,
+            license=_LICENSE,
+            citation=_CITATION,
+        )
+
+    def _split_generators(self, dl_manager):
+        """Returns SplitGenerators."""
+        urls = {
+            split: _URL.format(version=self.config.version, split_name=split_name)
+            for split, split_name in _SPLIT_NAMES.items()
+        }
+        dl_paths = dl_manager.download_and_extract(urls)
+        paths = {
+            split: [
+                dl_manager.iter_files(os.path.join(dl_paths[split], split_name, code)) for code in self.config.journals
+            ]
+            for split, split_name in _SPLIT_NAMES.items()
+        }
+        return [
+            datasets.SplitGenerator(name=split, gen_kwargs={"paths": paths[split]})
+            for split in _SPLIT_NAMES
+        ]
+
+    def _generate_examples(self, paths=None):
+        """Yields examples."""
+        for paths_per_journal in paths:
+            for path in paths_per_journal:
+                with open(path, "rb") as fin:
+                    for row in fin:
+                        json_obj = json.loads(row)
+                        yield json_obj[_DOI], {
+                            _DOI: json_obj[_DOI],
+                            ...
+                            _KEYWORDS: json_obj[_KEYWORDS]
+                        }
+\end{mintedbox}
+\caption{Classe SciLay per scaricare i dataset.}
+\label{lst:py-scilay}
+\end{customcode}
+
+
+\section{Esperimenti su SciLay con Baseline}
+Terminata questa fase il progetto è entrato nel vivo, cominciando a sperimentare varie baseline astrattive di modelli progettati per fare summarization.
+
+\subsection{Tipologia di Esperimenti Condotti}
+Sono stati condotti numerosi esperimenti di generazione di riassunti sul dataset proposto. Fra i principali vengono riportati i seguenti:
+\begin{itemize}
+    \item \emph{Addestramento Completo su Seq2Seq Models}: In questa fase, si è proceduto all'addestramento, alla validazione e al test di diversi modelli Seq2Seq sull'intero dataset. L'obiettivo era valutare l'efficacia di questi modelli nel generare riassunti, confrontando i risultati ottenuti con le prestazioni teoriche descritte dai loro sviluppatori. In particolare, l'attenzione si è concentrata sulla capacità dei modelli di produrre sia lay summary (riassunti per un pubblico non specialistico) che abstract accademici partendo dagli articoli completi.
+    \item \emph{Transfer Learning Few-Shot con il Modello Migliore}: Dopo aver identificato il modello Seq2Seq più performante nella fase precedente, questo è stato ulteriormente addestrato in un contesto di few-shot learning. In pratica, il modello è stato addestrato su un subset limitato di dati (tipicamente una sola rivista), per poi essere testato sulla sua capacità di generalizzare su altri subset del dataset. Questo esperimento mirava a valutare quanto efficacemente il modello potesse adattarsi e mantenere alte prestazioni anche con una quantità limitata di dati di addestramento.
+    \item \emph{Valutazione Zero-Shot con Large Language Models (LLM)}: In questa categoria di esperimenti, alcuni Large Language Models sono stati valutati in un contesto zero-shot. Ciò significa che al modello è stato fornito un articolo e delle linee guida specifiche per generare un riassunto, senza un addestramento preventivo sul tipo specifico di riassunto richiesto. L'obiettivo era valutare la qualità dei riassunti generati dal modello in assenza di addestramento specifico, per comprendere la sua capacità di adattamento e generazione di testi in condizioni non ottimali.
+\end{itemize}
+Questi esperimenti hanno fornito una panoramica sull'efficacia di varie tecniche di NLP nel contesto della generazione automatica di riassunti, offrendo spunti importanti per future ricerche e applicazioni pratiche nel campo.
+
+\subsection{Configurazione Ambiente di Sviluppo}
+Come anticipato nel capitolo \ref{cap:modellazione-prog}, l'uso del server ha richiesto l'utilizzo di containers Docker per fare in modo di mantenere tutte le dipendenze congelate all'interno di un ambiente riproducibile sui vari calcolatori a disposizione nel cluster.
+Poiché i vari esperimenti hanno richiesto librerie differenti, si è reso necessario creare differenti container docker, ciascuno con le specifiche dipendenze.
+
+
+\subsubsection{Dockerfile per Modelli Seq2Seq}
+Nel listato \ref{lst:dockerfile-seq2seq} è mostrato il Dockerfile utilizzato per fare esperimenti su modelli Seq2Seq come T5, Bart Large, LSG Bart Large, ecc. Per esso, come anticipato, si parte da un'immagine messa a disposizione da HuggingFace per avere già a disposizione molti dei pacchetti che sono stati impiegati. Fra i requirements più importanti spiccano
+\begin{itemize}
+    \item \emph{bitsandbytes==0.41.1}: Essenziale per il caricamento di modelli in precisione ridotta, questa caratteristica è cruciale per l'utilizzo di modelli di grandi dimensioni che, senza di essa, non potrebbero essere addestrati su GPU con 24GB di VRAM.
+    \item \emph{codecarbon==1.2.0}. Utilizzato per monitorare l'impatto ambientale in termini di CO2 prodotta degli esperimenti condotti.
+    \item \emph{ConfigParser==6.0.0}. Utilizzato per gestire le configurazioni e le impostazioni. Consente di avere degli oggetti che contengano tutte le configurazioni passate al codice python tramite file sh in un formato organizzato.
+    \item \emph{datasets==2.10.0}. Libreria fornita da HuggingFace per scaricare i dataset dal loro repository.
+    \item \emph{transformers==4.31.0}. Fornisce un'interfaccia semplice e flessibile per utilizzare modelli ad architettura transformers per una varietà di applicazioni NLP, come classificazione del testo, risposta a domande, traduzione automatica, ecc. Fra i modelli pre addestrati offerti spiccano Bart, T5, vari modelli LSG, ecc.
+    \item \emph{wandb==0.15.10}. Fornisce strumenti per registrare e visualizzare metriche, output e modelli durante l'addestramento. È molto utilizzato per il tracciamento degli esperimenti, la gestione dei modelli e l'analisi dei risultati.
+    \item \emph{torch==2.0.1}. Framework di calcolo scientifico, ampiamente usata in applicazioni di machine learning, che offre ampio supporto per algoritmi di ottimizzazione e reti neurali. È nota per la sua efficienza e facilità d'uso.
+\end{itemize}
+
+\begin{customcode}
+\begin{mintedbox}{dockerfile}
+FROM huggingface/transformers-pytorch-latest-gpu
+
+# Set the working directory inside the container
+WORKDIR /workspace/
+
+# Copy the requirements file into the container at /workspace
+COPY requirements.txt /workspace/
+
+# Install the required packages
+RUN pip install --no-cache-dir -r requirements.txt
+\end{mintedbox}
+\caption{Dockerfile per Baseline Seq2Seq.}
+\label{lst:dockerfile-seq2seq}
+\end{customcode}
+
+\subsubsection{Dockerfile per LLM}
+Per gli esperimenti zero-shot effettuati su Large Language Models (LLM), è stato cruciale l'impiego di un ambiente ottimizzato per i driver CUDA, al fine di sfruttare appieno le GPU Nvidia disponibili. A questo scopo, il Dockerfile mostrato nel listato \ref{lst:dockerfile-llm} è stato creato specificamente per soddisfare queste esigenze. 
+La struttura è molto simile a quella impiegata per i Seq2Seq, tuttavia \texttt{PyTorch} è stato installato da un repository specifico che lo supporta per CUDA 18 (ultima versione retrocompatibile con GPU Nvidia GeForce RTX 3090), assicurando così la compatibilità e l'efficienza nell'uso delle risorse di calcolo.
+
+Poiché il pacchetto \texttt{Transformer Engine} non funziona in retrocompatibilità, viene disinstallato per non generare errori in fase di esecuzione. 
+
+\begin{customcode}
+\begin{mintedbox}{dockerfile}
+FROM nvcr.io/nvidia/pytorch:22.12-py3
+
+# Set the working directory inside the container
+WORKDIR /workspace/
+
+# Update linux packages and python packet manager
+RUN apt-get update -y && apt-get autoremove -y
+RUN pip install --upgrade pip
+
+# Copy the requirements file into the container at /workspace
+COPY requirements_llm.txt /workspace/
+
+# Install the required packages
+RUN pip install --no-cache-dir -r requirements_llm.txt
+
+RUN pip install torch --index-url https://download.pytorch.org/whl/cu118
+
+RUN pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
+
+RUN pip uninstall transformer_engine -y
+\end{mintedbox}
+\caption{Dockerfile per LLM.}
+\label{lst:dockerfile-llm}
+\end{customcode}
+
+
+\subsection{Esperimenti con Modelli Seq2Seq}
+Dopo aver configurato adeguatamente l'ambiente di lavoro, è stato realizzato un codice versatile per addestrare, validare e testare diversi modelli sul dataset creato. Invece di modificare il codice per ogni nuovo modello, si è optato per una soluzione più flessibile e generica: le impostazioni specifiche di addestramento vengono passate direttamente come argomenti a linea di comando. Questo metodo semplifica il processo sperimentale e assicura una codebase uniforme per ogni esperimento.
+
+Tale strategia facilita notevolmente l'automatizzazione, permettendo l'addestramento di più modelli con un singolo script. Il listato \ref{lst:train-script-sh} illustra l'uso di un ciclo for che consente di passare attraverso diversi modelli, subset del dataset SciLay o altre configurazioni di addestramento. Sebbene il listato non mostri tutti i parametri utilizzati per ragioni di spazio, gli esempi forniti evidenziano la capacità dello script di adattarsi a svariate impostazioni. Questo include la scelta del modello, la lunghezza massima dei testi, il numero di epoche, il tasso di apprendimento e altri parametri cruciali.
+
+In conclusione, questo approccio elimina la necessità di scrivere codici differenti per ogni modello o dataset, risparmiando tempo e riducendo sia la complessità che il rischio di errori.
+
+\begin{customcode}
+\begin{mintedbox}{bash}
+#!/bin/bash
+
+N=4
+JOURNALS=("A" "B" "PLGEN" "MBIO")
+
+for ((i=0; i<N; i++)); do
+    CUDA_VISIBLE_DEVICES=0 python3 run_generation.py \
+        --logging online \
+        --do_train \
+        --do_eval \
+        --do_predict \
+        --dataset_name paniniDot/sci_lay \
+        --subset_name ${JOURNALS[$i]} \
+        --task_name full_to_technical_summarization \
+        --model_name_or_path ccdv/lsg-bart-large-4096 \
+        --log_level error \
+        --gradient_accumulation_steps 1 \
+        --max_source_length 4096 \
+        --max_target_length 512 \
+        --max_eval_samples 10 \
+        --generation_max_length 512 \
+        --num_train_epochs 4 \
+        --learning_rate 5e-5 \
+        --save_strategy epoch \
+        --evaluation_strategy epoch \
+        --gradient_checkpointing \
+        --load_best_model_at_end \
+        --predict_with_generate \
+        --metric_for_best_model eval_rouge1 \
+        --save_total_limit 1 \
+        --num_beams 5 \
+        --generation_num_beams 2 \
+        --group_by_length \
+        --sortish_sampler \
+        --weight_decay 0.01 \
+        --label_smoothing_factor 0.1 \
+        --include_inputs_for_metrics \
+        --remove_unused_columns \
+        --per_device_train_batch_size 1 \
+        --per_device_eval_batch_size 1 \
+        --fp16 \
+        ...
+    wait
+done
+\end{mintedbox}
+\caption{Script sh per addestramento di un modello su molteplici subset di SciLay.}
+\label{lst:train-script-sh}
+\end{customcode}
+
+\subsubsection{Addestramento e Valutazione sull'Intero Dataset}
+Come anticipato, in questa prima fase si sono usati diversi modelli Seq2Seq sull'intero dataset per verificarne l'aderenza con le prestazioni teoriche descritte dai creatori. Nel caso in cui si eguagliassero o addirittura superassero si dimostrerebbe la qualità del dataset prodotto. Alcuni dei modelli impiegati non sono stati addestrati per mancanza di risorse hardware. Malgrado gli sforzi impiegati per ridurre la dimensione dei modelli, abbassando la precisione e il numero di token in input, la VRAM a disposizione non si è rivelata sufficiente.
+Il codice impiegato è suddiviso in 
+\begin{itemize}
+    \item Definizione degli Argomenti per effettuare l'addestramento. Questa fase è fondamentale per stabilire i parametri di configurazione del modello e del processo di addestramento.
+    \item Controllo di eventuali checkpoint di modelli precedentemente addestrati. Questa fase garantisce l'efficienza dell'addestramento, permettendo di riprendere da un punto salvato in precedenza. Ciò evita la necessità di ricominciare l'addestramento da capo, risparmiando tempo e risorse computazionali.
+    \item Preprocessing del Dataset. Una fase cruciale dove i dati vengono preparati per l'addestramento. Questo include la selezione delle colonne appropriate dal dataset e la loro tokenizzazione, un passo essenziale per trasformare i dati grezzi in un formato che il modello può comprendere ed elaborare.
+    \item Configurazione dell'Ottimizzatore, Scheduler e Trainer ed Effettuazione dell'Addestramento. Questo è il cuore del processo di addestramento, dove vengono impostati l'ottimizzatore e lo scheduler per controllare il modo in cui il modello apprende durante l'addestramento. Il trainer coordina tutto il processo, gestendo il ciclo di addestramento e di validazione.
+    \item Salvataggio dei risultati. Dopo l'addestramento, è importante salvare i risultati, compresi i pesi del modello e le metriche di performance. Questa fase prevede semplicemente la scrittura su file delle metriche calcolate in fase di inferenza. 
+\end{itemize}
+
+\paragraph{Definizione degli Argomenti}
+La sezione iniziale del codice si occupa della definizione delle classi \texttt{DataTrainingArguments} e \texttt{ModelArguments}, che specificano rispettivamente le opzioni per i dati in input e per il modello da addestrare, come illustrato nel listato \ref{lst:dataargs-modelargs}.
+
+Queste classi sono implementate sfruttando la libreria \texttt{dataclasses} che consente, tramite l'uso di \emph{decoratori} Python, di arricchire le classi create dagli utenti con metodi speciali per una gestione efficace degli attributi. Ad esempio con l'ausilio della funzione \texttt{field()} che permette di dettagliare ulteriormente gli attributi, fornendo controlli automatici durante l'esecuzione del programma. Ad esempio si possono specificare \emph{default}, ovvero un valore di default per un dato attributo. Inoltre, si fa uso della classe \texttt{Optional} per indicare che determinati attributi possono essere omessi, semplificando la gestione di scenari in cui si potrebbero altrimenti utilizzare molteplici condizioni if o valori \texttt{None}.
+
+In aggiunta, il listato \ref{lst:dataargs-modelargs} dimostra l'uso pratico di queste classi. Vengono create istanze per \texttt{DataTrainingArguments} e \texttt{ModelArguments}, nonché per \texttt{Seq2SeqTrainingArguments}, una classe fornita dal modulo \texttt{transformers}, contenente tutti i parametri necessari per addestrare un modello Seq2Seq. Queste istanze sono poi passate come argomenti a \texttt{HfArgumentParser}, una classe progettata per semplificare il parsing degli argomenti dalla riga di comando in script focalizzati sull'uso di modelli di machine learning.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+from dataclasses import dataclass, field
+from typing import Optional
+from transformers import HfArgumentParser, Seq2SeqTrainingArguments
+
+@dataclass
+class DataTrainingArguments:
+    """
+    Arguments pertaining to what data we are going to input our model for training and eval.
+    """
+    dataset_name: Optional[str] = field(
+        default=None, metadata={"help": "The name of the dataset to use (via the datasets library)."}
+    )
+    ... 
+
+@dataclass
+class ModelArguments:
+    """
+    Arguments pertaining to which model/config/tokenizer we are going to fine-tune from.
+    """
+    model_name_or_path: str = field(
+        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+    )
+    ...
+
+def main():
+    parser = HfArgumentParser((ModelArguments, DataTrainingArguments, Seq2SeqTrainingArguments))
+    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    ...
+\end{mintedbox}
+\caption{Definizione delle classi per gli argomenti.}
+\label{lst:dataargs-modelargs}
+\end{customcode}
+
+\begin{customcode}
+\begin{mintedbox}{python}
+from transformers.trainer_utils import get_last_checkpoint
+
+def check_for_last_checkpoint(training_args, logger):
+    if os.path.isdir(training_args.output_dir):
+        if training_args.do_train and not training_args.overwrite_output_dir:
+            last_checkpoint = get_last_checkpoint(training_args.output_dir)
+            if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
+                raise ValueError(...)
+            elif last_checkpoint is not None and training_args.resume_from_checkpoint is None:
+                logger.info("checkpoint detected")
+            return last_checkpoint
+\end{mintedbox}
+\caption{Controllo di eventuali checkpoint salvati.}
+\label{lst:checkpoint-check}
+\end{customcode}
+
+\paragraph{Caricamento di eventuali checkpoint}
+Come mostra il listato \ref{lst:checkpoint-check}, la funzione per il controllo del checkpoint fa uso della funzione \texttt{get\_last\_checkpoint} di \texttt{transformers}. Questa funzione è appositamente realizzata per caricare i pesi determinati in un precedente addestramento di uno stesso modello. La funzione \texttt{check\_for\_last\_checkpoint} può tornare un modello valido o \texttt{None} qualora non si sia trovato. 
+
+\paragraph{Preprocessing del Dataset}
+La fase di preprocessing del dataset è fondamentale per rendere i dati compatibili e comprensibili per il modello di machine learning. Questo processo si articola in diversi passaggi critici (di cui elencati solo i principali per ragioni di sintesi):
+\begin{itemize}
+    \item \emph{Caricamento del Dataset}: Inizia con il caricamento dei dati attraverso la funzione \texttt{load\_dataset()} del modulo \texttt{datasets}. 
+    \item \emph{Estrazione delle Colonne Rilevanti}: Utilizzando le funzioni \texttt{get\_dataset\_}\\ \texttt{columns} e \texttt{get\_text\_and\_summary\_columns}, vengono estratte le colonne di input (\texttt{text\_column}) e di riferimento (\texttt{summary\_column}) dal dataset. Questo permette di identificare quali dati saranno usati per l'addestramento e per la valutazione del modello.
+    \item \emph{Tokenizzazione e Pulizia dei Dati}: Il passo finale è la tokenizzazione delle colonne di input e riferimento, un processo eseguito dalla funzione \texttt{preprocess\_dataset}. Questa fase trasforma il testo in un formato che il modello può processare efficacemente, rimuovendo contemporaneamente le colonne non necessarie per semplificare il dataset.
+\end{itemize}
+Per ragioni di chiarezza, nel listato \ref{lst:preprocessing} sono illustrate solo alcune delle funzioni principali utilizzate in questa fase, evidenziando come vengono invocate nel main. È importante notare come il codice, nelle righe 45 a 56, sia strutturato in modo simmetrico per le fasi di valutazione (eval) e test, garantendo un approccio coerente e sistematico nella preparazione dei diversi set di dati. 
+\begin{customcode}
+\begin{mintedbox}{python}
+from datasets import load_dataset
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import logging
+import os
+import sys 
+
+def preprocess_function(examples, text_column, summary_column, tokenizer, max_source_length, max_target_length):
+    inputs, targets = zip(*((i, t) for i, t in zip(examples[text_column], examples[summary_column]) if i and t))
+
+    model_inputs = tokenizer(list(inputs), max_length=max_source_length, truncation=True)
+    labels = tokenizer(list(targets), max_length=max_target_length, truncation=True)
+
+    model_inputs["labels"] = labels["input_ids"]
+    return model_inputs
+
+def preprocess_dataset(dataset, preprocess_fn, column_names, overwrite_cache, desc, training_args, text_column, summary_column, tokenizer, max_source_length, max_target_length):
+    with training_args.main_process_first(desc=f"{desc} map pre-processing"):
+        return dataset.map(
+            lambda examples: preprocess_fn(
+                examples,
+                text_column=text_column,
+                summary_column=summary_column,
+                tokenizer=tokenizer,
+                max_source_length=max_source_length,
+                max_target_length=max_target_length,
+            ),
+            batched=True,
+            remove_columns=column_names,
+            load_from_cache_file=not overwrite_cache,
+            desc=f"Running tokenizer on {desc} dataset",
+        )  
+
+def main(): 
+    ...
+    raw_datasets = load_dataset(
+        data_args.dataset_name,
+        data_args.subset_name,
+        cache_dir=model_args.cache_dir,
+        download_mode="force_redownload",
+        use_auth_token=True if model_args.use_auth_token else None,
+    )
+
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    text_column, summary_column = get_text_and_summary_columns(data_args, get_dataset_columns(raw_datasets, training_args), task_name_mapping)
+
+    if training_args.do_train:
+        train_dataset = preprocess_dataset(
+            raw_datasets["train"],
+            preprocess_function,
+            column_names,
+            data_args.overwrite_cache,
+            "train",
+            training_args,
+            text_column,
+            summary_column,
+            tokenizer,
+            data_args.max_source_length,    
+            data_args.max_target_length
+        )
+\end{mintedbox}
+\caption{Preprocessing del dataset.}
+\label{lst:preprocessing}
+\end{customcode}
+
+\paragraph{Configurazione di Ottimizzatore, Scheduler e Trainer ed Effettuazione
+dell’Addestramento}
+Questa fase rappresenta il nucleo dell'intero esperimento, comprendendo l'addestramento, la validazione e il test del modello selezionato. L'approccio adottato prevede un ciclo di addestramento durante il quale, al termine di ogni epoca, si effettua una sessione di validazione per valutare le prestazioni del modello. Una volta completato l'addestramento, si esegue un'ulteriore sessione di validazione seguita dal ciclo di test. Come per la fase di preprocessing del dataset, anche questa procedura si articola in vari passaggi:
+\begin{itemize}
+    \item \emph{Configurazione dell'ottimizzatore}.  L'ottimizzatore è un componente critico nell'addestramento dei modelli di machine learning, il cui compito è minimizzare l'errore del modello aggiornando i suoi parametri (equivalente della discesa del gradiente descritta nel capitolo \ref{cap:tecnologie} di questa tesi). Tra i diversi algoritmi di ottimizzazione disponibili, per questo esperimento è stato scelto AdamW \cite{loshchilov2019decoupled}. 
+    \item \emph{Configurazione dello Scheduler}: Lo scheduler è un elemento chiave che modula il tasso di apprendimento (learning rate) durante l'addestramento. In questa fase, si configura lo scheduler per specificare come il learning rate dovrebbe variare attraverso le diverse epoche, aiutando così il modello a convergere più efficacemente verso una soluzione ottimale.
+    \item \emph{Definizione del Trainer e Addestramento}: Il trainer è lo strumento che gestisce l'addestramento del modello. Viene utilizzata la classe \texttt{Seq2SeqTrainer} per impostare un ambiente di addestramento che incorpora il modello, l'ottimizzatore e lo scheduler. Questa classe permette una gestione efficiente e personalizzabile del processo di addestramento, integrando aspetti critici come il calcolo della loss, la valutazione delle metriche e la gestione dei dati.
+\end{itemize}
+Il listato \ref{lst:training} riassume i passaggi più importanti di questa fase.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+import torch
+from transformers import Seq2SeqTrainer, get_scheduler
+
+def setup_optimizer(model, weight_decay, learning_rate):
+    no_decay = ["bias", "LayerNorm.weight", "layer_norm.weight"]
+    optimizer_grouped_parameters = [
+        {
+            "params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+            "weight_decay": weight_decay,
+        },
+        {
+            "params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)],
+            "weight_decay": 0.0,
+        },
+    ]
+    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=learning_rate)
+    return optimizer
+
+def setup_scheduler(optimizer, num_update_steps_per_epoch, num_train_epochs):
+    max_train_steps = num_train_epochs * num_update_steps_per_epoch
+    return get_scheduler(
+        name="linear",
+        optimizer=optimizer,
+        num_warmup_steps=0,
+        num_training_steps=max_train_steps
+    )
+
+def main():
+    ...
+    optimizer = setup_optimizer(model, training_args.weight_decay, training_args.learning_rate)
+    lr_scheduler = setup_scheduler(optimizer, len(train_dataloader), training_args.num_train_epochs)
+    optimizers = (optimizer, lr_scheduler)
+
+    trainer = Seq2SeqTrainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset if training_args.do_train else None,
+        eval_dataset=eval_dataset if training_args.do_eval else None,
+        tokenizer=tokenizer,
+        data_collator=data_collator,
+        compute_metrics=lambda eval_preds: compute_metrics(eval_preds, tokenizer=tokenizer) if training_args.predict_with_generate else None,
+        optimizers=optimizers,
+    )
+
+    #checkpoint loaded with check_for_last_checkpoint
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)    
+\end{mintedbox}
+\caption{Configurazione optimizer, scheduler e trainer e addestramento.}
+\label{lst:training}
+\end{customcode}
+
+
+\paragraph{Risultati}
+Nelle tabelle \ref{tab:res-seq2seq-lay} e \ref{tab:res-seq2seq-tech} sono riportati rispettivamente i risultati di ogni addestramento per il task di summarization da full a lay e da full a technical. Le tabelle sono divise per tipologia di modello (lineare o quadratico) e presentano tutte le metriche descritte nel capitolo \ref{cap:sviluppo}.
+
+I modelli sono stati tutti quanti addestrati 4 epoche (in quanto attraverso test preliminari si è visto statisticamente che il picco di loss è raggiunto in quest'epoca, consentendoci di risparmiare tempo) e con i seguenti iperparametri (specificati solo i più rilevanti)
+\begin{itemize}
+    \item Numero di token di input: 1024 per BART Large e Base, 4096 per tutti gli altri 
+    \item Numero di token generati in output: 512
+    \item Learning Rate di partenza $5\cdot 10^{-5}$
+    \item Batch Size di Training 1
+    \item Batch Size di Validation 1
+    \item Precisione mista floating point 16 bit.
+\end{itemize}
+
+Come si evince dalla tabella \ref{tab:res-seq2seq-lay}, per quanto riguarda il task di generazione di riassunto lay 
+\begin{itemize}
+    \item BART Large mostra le migliori performance in Rouge-1, Rouge-2 e Rouge-L, suggerendo una buona capacità di catturare sia i dettagli chiave (Rouge-2) che la globalità del testo originale (Rouge-L). Oltre a questo presenta il miglior $\mathcal{R}$, suggerendo una maggiore varietà nel riassunto, perdendosi tuttavia nelle altre metriche.
+    \item Per quanto riguarda LSG BART Large, invece, risulta leggermente inferiore a BART Large nelle metriche Rouge, pur superandolo leggermente nelle metriche BERT Score, BLEU-1, BLEU-2, BLEU-3 e BLEU-4, suggerendo una qualità generale leggermente superiore.
+    \item Passando poi a LSG Pegasus Large si nota che ottiene i migliori BARTScore F,P pur essendo estremamente bassi per tutti i modelli.
+    \item Terminando la valutazione con LSG BART Base si nota che presenta prestazioni complessivamente inferiori rispetto agli altri modelli, il che potrebbe essere attribuito al suo minor numero di parametri.
+\end{itemize} 
+
+Per quanto riguarda il task di generazione di abstract, la tabella \ref{tab:res-seq2seq-tech} mostra come 
+\begin{itemize}
+    \item BART Large mostri buone performance pur essendo superato da altri modelli in quasi tutte le metriche, indicando una possibile inefficacia per compiti di generazione di testi tecnici.
+    \item LSG BART Large risulti essere migliore in R1, R2, RL e R, suggerendo eccellenza nel catturare dettagli chiave e significato globale.
+    \item LSG Pegasus Large: mostri miglioramenti significativi in diverse metriche rispetto al task lay, pur rimanendo inferiore a LSG BART Large in molte di esse.
+    \item Infine LSG BART Base mostri miglioramenti in BERT Score e BLEU rispetto al task lay, suggerendo un'adattabilità maggiore ai contenuti tecnici.
+\end{itemize}
+
+Confrontando i due task emerge come i modelli tendano a mostrare prestazioni leggermente migliori sul task tecnico rispetto a quello lay in termini di qualità generale (BertScore, BLEU). Questo potrebbe suggerire che i modelli sono più adatti a gestire contenuti tecnici, forse a causa di una maggiore coerenza e specificità nel linguaggio tecnico, nonché adesione al testo originale.
+
+In conclusione, LSG BART Large e LSG BART Base sembrano essere i modelli più consistenti su entrambi i task, con LSG BART Large leggermente migliore nel complesso. Per questo motivo è il modello impiegato nel task successivo di transfert learning. 
+\begin{table}
+\centering
+\begin{adjustbox}{width=\textwidth,center}
+\begin{tabular}{@{}lccccccccccccc@{}}
+\toprule
+\textbf{Model} & \textbf{R-1} & \textbf{R-2} & \textbf{R-L} & \textbf{\(\mathcal{R}\)} & \textbf{bertscore} & \textbf{BS-F} & \textbf{BS-P} & \textbf{BS-R} & \textbf{B-1} & \textbf{B-2} & \textbf{B-3} & \textbf{B-4} & \textbf{\(\Upsilon\)} \\
+\midrule
+\multicolumn{14}{l}{Quadratic} \\
+\rowcolor[rgb]{0.965,0.965,0.965} \textsc{Bart Large} & \textbf{40.24} & \textbf{12.61} & \textbf{29.99} & \textbf{27.26} & 42.22 & -3.152 & -3.109 & -3.195 & 35.74 & 18.70 & 11.11 & 7.26 & \textbf{55.29} \\
+\midrule
+\multicolumn{14}{l}{Linear} \\
+\textsc{LSG Bart Large} & 39.54 & 12.28 & 29.45 & 26.75 & \textbf{42.3} & -3.216 & -3.292 & \textbf{-3.14} & \textbf{35.76} & \textbf{18.82} & \textbf{11.39} & \textbf{7.61} & 53.79 \\
+\rowcolor[rgb]{0.965,0.965,0.965} \textsc{LSG Pegasus Large} & 36.44 & 10.72 & 27.85 & 24.72 & 37.60 & \textbf{-3.041} & \textbf{-2.79} & -3.292 & 27.89 & 14.24 & 8.51 & 5.65 & 54.61 \\
+\textsc{LSG Bart Base} & 39.0 & 11.91 & 29.19 & 26.37 & 41.56 & -3.249 & -3.329 & -3.169 & 35.42 & 18.51 & 11.16 & 7.44 & 54.57 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Risultati dei Modelli per il Task di Summarization da Full a Lay.}
+\label{tab:res-seq2seq-lay}
+\end{table}
+
+\begin{table}
+\centering
+\begin{adjustbox}{width=\textwidth,center}
+\begin{tabular}{@{}lccccccccccccc@{}}
+\toprule
+\textbf{Model} & \textbf{R-1} & \textbf{R-2} & \textbf{R-L} & \textbf{\(\mathcal{R}\)} & \textbf{bertscore} & \textbf{BS-F} & \textbf{BS-P} & \textbf{BS-R} & \textbf{B-1} & \textbf{B-2} & \textbf{B3} & \textbf{B-4} & \textbf{\(\Upsilon\)} \\
+\midrule
+\multicolumn{13}{l}{Quadratic} \\
+\rowcolor[rgb]{0.965,0.965,0.965} \textsc{Bart Large} & 41.49 & 13.41 &  29.64 & 27.81 & 44.44 & \textbf{-3.147} & \textbf{-3.127} & -3.168 & \textbf{37.7} & 20.18 & 12.1 & 7.94 & \textbf{54.94} \\
+\midrule
+\multicolumn{13}{l}{Linear} \\
+\textsc{LSG Bart Large} & \textbf{42.81} & \textbf{14.49} & \textbf{30.68} & \textbf{28.94} & \textbf{45.72} & \textbf{-3.147} & -3.188 & \textbf{-3.106} & 37 & \textbf{20.53} & \textbf{12.75} & \textbf{8.6} & 54.86\\
+\rowcolor[rgb]{0.965,0.965,0.965} \textsc{LSG Pegasus Large} & 40.33 & 13.25 & 29.48 & 27.35 & 42.87 & -2.921 & -2.699 & -3.143 & 31.61 & 17.48 & 11.07 & 7.66 & 53.49 \\
+\textsc{LSG Bart Base} & 41.65 & 13.58 & 29.84 & 27.99 & 45.05 & -3.169 & -3.224 &  -3.114 & 36.81 & 20.25 & 12.53 & 8.45 & 55.52 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Risultati dei Modelli per il Task di Summarization da Full a Technical.}
+\label{tab:res-seq2seq-tech}
+\end{table}
+
+
+\paragraph{Osservazioni Pratiche}
+Come precedentemente menzionato, la varietà di modelli considerati per questi task è notevolmente più ampia di quella mostrata nei risultati. Tuttavia, a causa delle limitazioni imposte dalle GPU a disposizione e malgrado i numerosi tentativi di ottimizzazione, vari modelli non si sono rivelati abbastanza efficienti in termini di risorse per essere utilizzati negli esperimenti.
+Tra questi, i modelli che hanno presentato maggiori difficoltà sono stati T5 (nelle versioni Large e X-Large), PEGASUS, PEGASUS-X e LED (versione Large), PRIMERA.
+I problemi incontrati sono stati principalmente legati alla capacità della VRAM, pari a 24GB. Per cercare di aggirare queste limitazioni, abbiamo adottato diverse strategie, tra cui:
+\begin{itemize}
+    \item La riduzione del numero di token in input (fino a 1024).
+    \item La diminuzione del batch size per training e validation (ridotto a 1, non è possibile spingersi oltre).
+    %LR: le epoche non contano con la memoria occupata, ma solo col tempo
+    %\item La riduzione del numero di epoche. 
+    \item L'impiego di un Optimizer a 8 bit, prelevato dalla libreria \texttt{bitsandbytes}, in sostituzione del classico AdamW a 32 bit.
+\end{itemize}
+Queste misure, pur essendo tentativi validi di ottimizzazione, non sono state sufficienti a rendere questi modelli praticabili con le risorse a disposizione.
+
+\subsubsection{Transfer Learning}
+Come precedentemente menzionato, il modello Seq2Seq più efficace, identificato come LSG Bart Large, è stato sottoposto a un ulteriore processo di addestramento nel contesto del few-shot learning. Questo approccio comporta la selezione di un numero molto ristretto di documenti appartenenti ad una specifica rivista, costituendo così un dataset limitato.
+Successivamente, il modello è stato addestrato e validato utilizzando questo insieme ristretto di dati. L'obiettivo principale era di testare il modello su articoli provenienti da altre riviste per valutare la sua capacità di adattarsi a diversi tipi di articoli, stili e linguaggi, nonostante la limitata quantità di dati di addestramento a disposizione. 
+In questo studio di tesi, gli esperimenti si sono focalizzati esclusivamente sulla produzione di riassunti laici.
+
+Per quanto riguarda l'implementazione, il codice utilizzato è molto simile a quello impiegato negli esperimenti precedenti. Tuttavia, vi sono state alcune modifiche significative nel modo in cui il dataset è stato caricato e come sono state gestite le fasi di addestramento, validazione e test. Queste variazioni sono state necessarie per adattare il processo al contesto specifico del few-shot learning.
+
+\paragraph{Caricamento del dataset}
+La prima differenza fondamentale rispetto al codice usato negli esperimenti con l'intero dataset riguarda il metodo di caricamento del dataset dalla libreria HuggingFace. Nel caso precedente, il caricamento era gestito direttamente nel main, precisamente alla riga 35 del listato \ref{lst:preprocessing}, attraverso l'uso della funzione standard \texttt{load\_dataset} di \texttt{datasets}. Tuttavia, per gli esperimenti correnti, è necessario adottare un approccio differente per caricare e gestire separatamente i diversi dataset, al fine di eseguire in modo efficace le fasi di training, validazione e test su specifiche porzioni di essi.
+L'utilizzo diretto della funzione \texttt{load\_dataset('paniniDot/sci\_lay',[A', `B', ...])} non è adeguato in questo contesto, poiché produce un dataset unificato attraverso il merge dei journal specificati, il che non è compatibile con gli obiettivi di questo esperimento.
+Per risolvere questa problematica, come illustrato nel listato \ref{lst:load_ds_tl}, è stata implementata la funzione \texttt{get\_datasets}. Questa funzione genera tre dizionari, ognuno contenente coppie chiave-valore. La chiave corrisponde al nome di un specifico subset (ad esempio, una rivista), mentre il valore è un oggetto \texttt{Dataset} formato nel seguente modo:
+
+\begin{lstlisting}[basicstyle=\footnotesize]
+Dataset({
+    features: ['plain_text', 'technical_text', ...],
+    num_rows: ...
+})
+\end{lstlisting}
+
+In questi dizionari sono racchiuse le istanze per il corrispondente split di ogni subset selezionato. Questa soluzione consente di gestire separatamente i vari subset per le fasi di addestramento, validazione e test all'interno dell'esperimento.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+import datasets 
+
+def get_datasets(dataset_name, cache_dir, use_auth_token, train_subset, subsets):
+    train, validation, test = {}, {}, {}
+
+    for subset in subsets:
+        ds = load_dataset(dataset_name, subset, cache_dir=cache_dir, use_auth_token=use_auth_token)
+        if subset == train_subset:
+            train[subset] = ds['train']
+            validation[subset] = ds['validation']
+        test[subset] = ds['test']
+
+    return train, validation, test
+\end{mintedbox}
+\caption{Caricamento dei Dataset per Transfert Learning Few-Shot.}
+\label{lst:load_ds_tl}
+\end{customcode}
+
+\paragraph{Preparazione del dataset}
+Nel contesto attuale, il processo di addestramento e validazione si focalizza esclusivamente sul subset specificato come argomento, mentre il test viene eseguito su tutti i subset. Ciò determina un'approccio di preprocessing dei dataset leggermente diverso rispetto a quello adottato negli esperimenti precedenti. La funzione descritta nel listato \ref{lst:load_ds_tl} genera dizionari per le fasi di training e validazione, contenenti un singolo elemento corrispondente al subset passato come argomento dallo script sh. Per quanto riguarda il test, invece, avrà un'istanza per ogni subset del dataset. 
+Questo comporta che la preparazione dei dataset andrà fatta per ciascuna istanza di ogni dataset. Questo avviene mediante un ciclo che esegue la preparazione una volta per ogni subset di test. Quanto detto è mostrato nel listato \ref{lst:prep_ds_tl}. Il codice per eval è identico a quello di train, pertanto viene omesso per risultare più conciso.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+def main():
+    subsets = ["A", "B", "C", ...]
+    train_dataset_dict, eval_dataset_dict, test_dataset_dict = get_datasets(data_args.dataset_name, model_args.cache_dir, model_args.use_auth_token, data_args.subset_name, subsets)
+    ...
+    train_dataset = preprocess_dataset(
+        train_dataset_dict[data_args.subset_name],
+        ...
+    ) 
+    for subset_name, test_dataset in test_dataset_dict.items(): 
+        column_names = test_dataset.column_names
+        text_column, summary_column = get_text_and_summary_columns(data_args, column_names, task_name_mapping)
+        test_dataset_dict[subset_name] = preprocess_dataset(
+            test_dataset,
+            ...
+        )  
+\end{mintedbox}
+\caption{Preparazione dei Dataset per Transfert Learning Few-Shot.}
+\label{lst:prep_ds_tl}
+\end{customcode}
+
+\paragraph{Addestramento Validazione e Test}
+Cosi come per il preprocessing, anche le fasi di addestramento, validazione e test del modello sono gestite con un approccio ciclico che consente di processare ogni subset definito. Questo processo è illustrato nel listato \ref{lst:train_tl}. Per ottimizzare e rendere più efficiente il codice, le operazioni comuni a tutte e tre le fasi sono state incapsulate nella funzione \texttt{predict\_and\_save\_results}. Questa funzione, dopo aver determinato la fase corrente (train, eval, o test), esegue l'addestramento o la predizione a seconda del contesto. Inoltre, calcola vari score e li archivia in un file, il cui percorso è specificato come argomento della funzione. In particolare, durante la fase di test, la funzione si assicura che i risultati siano salvati in una sottocartella dedicata al subset specifico su cui il test è stato eseguito.Questa funzione, dopo aver determinato la fase corrente (train, eval, o test), esegue l'addestramento o la predizione a seconda del contesto. Inoltre, calcola vari score e li archivia in un file, il cui percorso è specificato come argomento della funzione. In particolare, durante la fase di test, la funzione si assicura che i risultati siano salvati in una sottocartella dedicata al subset specifico su cui il test è stato eseguito.
+
+\begin{customcode}
+\begin{mintedbox}{python}
+from transformers import Seq2SeqTrainer,AutoTokenizer
+import json
+import os
+
+def main():
+    trainer = Seq2SeqTrainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset,
+        tokenizer=tokenizer,
+        data_collator=data_collator,
+        compute_metrics=lambda eval_preds: compute_metrics(eval_preds, tokenizer=tokenizer) if training_args.predict_with_generate else None,
+        optimizers=optimizers,
+    )
+
+    #train + eval
+    predict_and_save_results(trainer, last_checkpoint, train_dataset, len(train_dataset), training_args, tokenizer, "train")
+
+    #test 
+    for subset_name, test_dataset in test_dataset_dict.items():
+        predict_and_save_results(trainer, last_checkpoint, test_dataset, len(test_dataset), training_args, tokenizer, "test", subset_name)
+\end{mintedbox}
+\caption{Esecuzione di addestramento, validazione e test.}
+\label{lst:train_tl}
+\end{customcode}
+
+\paragraph{Risultati}
+
+Per ogni rivista utilizzata nell'addestramento del dataset, il modello viene testato su tutte le altre riviste, generando le metriche di valutazione citate nel capitolo \ref{cap:modellazione-prog}, per ciascun test. Di seguito sono presentati i punteggi medi ottenuti addestrando il modello su una specifica rivista e testandolo su tutte le altre.
+
+Quello che si evince analizzando la tabella è che i punteggi medi migliori sono quelli ottenuti addestrando sulla rivista (booooh). Questo può dipendere da molti fattori fra cui ....
+La rivista che produce il peggior risultato è (boooh)....
+Notiamo che mediamente i risultati sono discretamente buoni, seppur minori di quelli ottenuti addestrando su tutto il dataset, questo per ovvie ragioni di istanze di addestramento. 
+
+\begin{table}
+\centering
+\begin{adjustbox}{width=\textwidth,center}
+\begin{tabular}{@{}lccccccccccccc@{}}
+\toprule
+\textbf{Rivista per Training} & \textbf{R-1} & \textbf{R-2} & \textbf{R-L} & \textbf{\(\mathcal{R}\)} & \textbf{bertscore} & \textbf{BS-F} & \textbf{BS-P} & \textbf{BS-R} & \textbf{B-1} & \textbf{B-2} & \textbf{B-3} & \textbf{B-4} & \textbf{\(\Upsilon\)} \\
+\midrule
+\rowcolor[rgb]{0.965,0.965,0.965}NC & 30.12 & 8.50 & 24.92 & 20.99 & 33.67 & -3.27 & -2.91 & -3.63 & 7.19 & 3.74 & 2.22 & 1.39 & -- \\
+A & 35.08 & 8.87 & 25.42 & 22.83 & 34.99 & -3.45 & -3.37 & -3.53 & 26.18 & 12.74 & 6.94 & 4.17 & -- \\
+\rowcolor[rgb]{0.965,0.965,0.965}PLGEN & & & & & & & & & & & & & \\
+PLPAT & & & & & & & & & & & & & \\
+\rowcolor[rgb]{0.965,0.965,0.965}PLCB & & & & & & & & & & & & & \\
+PLNTD & & & & & & & & & & & & & \\
+\rowcolor[rgb]{0.965,0.965,0.965}B & 24.07 & 3.30 & 21.10 & 16.00 & 12.20 & -3.35 & -2.48 & -4.21 & 12.00 & 4.58 & 1.67 & 0.68 & -- \\
+I & 34.70 & 8.70 & 25.44 & 22.65 & 34.29 & -3.34 & -3.11 & -3.58 & 23.88 & 11.63 & 6.23 & 3.64 & -- \\
+\rowcolor[rgb]{0.965,0.965,0.965}PLB & & & & & & & & & & & & & \\
+CB & & & & & & & & & & & & & \\
+\rowcolor[rgb]{0.965,0.965,0.965}SD & & & & & & & & & & & & & \\
+MBIO & 34.79 & 8.31 & 24.93 & 22.38 & 34.66 & -3.33 & -3.10 & -3.58 & 26.83 & 12.83 & 6.65 & 3.71 & -- \\
+\rowcolor[rgb]{0.965,0.965,0.965}C & 35.34 & 9.41 & 25.67 & 23.18 & 35.52 & -3.44 & -3.43 & -3.45 & 24.31 & 12.01 & 6.87 & 4.38 & -- \\
+OTHER & 33.89 & 8.70 & 25.19 & 22.33 & 33.84 & -3.40 & -3.23 & -3.56 & 22.35 & 10.97 & 6.07 & 3.69 & -- \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Risultati medi esperimento di transfert learning.}
+\label{tab:tf-results}
+\end{table}
 
 
 
 
 
+\subsection{Esperimenti su LLM}
+Terminati gli esperimenti su modelli sequence to sequence, l'attenzione si è spostata su modelli LLM per confrontarne i risultati con quelli ottenuti da modelli con meno parametri. A causa dei vincoli di tempo, ci si è limitati a compiere esperimenti zero shot, questo significa che gli LLM non sono stati addestrati, bensì, basandosi sulla loro versione non fine-tuned, si è fornito un prompt della forma 
+\begin{center}
+    \emph{Summarize the following document according to these guidelines: \{guidelines\}. Document: \{document\}}
+\end{center}
+aspettandosi che il modello completi tale input con un riassunto valido. 
+Le direttive utilizzate sono quelle fornite dagli autori del sito \href{https://www.plainlanguagesummaries.com/}{Plain Language Summaries}, disponibili esclusivamente su richiesta scritta.
 
+\subsubsection{Inferenza Zero Shot su Rivista mBio}
+Cosi come fatto per i modelli Seq2Seq, anche in questo caso sono stati condotti degli esperimenti preliminari su un dataset di dimensioni limitate. Questo consente, fra le altre cose, di determinare un lower bound per i risultati raggiungibili e le tempistiche necessarie a compiere un addestramento più consistente. 
+In particolare, in questo caso, la scelta del dataset è ricaduta sul subset di SciLay della rivista rivista \href{https://journals.asm.org/journal/mbio}{mBio}, avendo in totale 759 istanze diviste in train, validation e test.
 
+Il codice impiegato risulta essere molto semplice poiché privo della fase di addestramento.
+Come nel contesto dei modelli Seq2Seq, anche in questo caso si è adottato un approccio parametrizzabile via script .sh, facilitando l'esecuzione di molteplici esperimenti senza dover modificare il codice python.
 
+Il sorgente python si suddivide in 
 
+\begin{itemize}
+    \item Caricamento di dataset, modello e tokenizer a partire dalle classi di utilità di \texttt{datasets} e \texttt{transformers}.
+    \item Inferenza sul dataset fornendo ogni istanza e le linee guida al modello.
+\end{itemize}
 
+\paragraph{Caricamento di Dataset Modello e Tokenizer}
+Il codice, per questa parte, risulta molto simile a quello impiegato nei modelli Seq2Seq. L'unica cosa in cui differiscono è la classe scelta per caricare il modello. In particolare, come mostra il listato \ref{lst:ds-model-tok-llm}, nel caso di large language models, \texttt{transformers} offre la classe \texttt{AutoModelForCasualLM} piuttosto che \texttt{AutoModelForSeq2SeqLM}. 
+La differenza chiave tra questi modelli è che AutoModelForSeq2SeqLM è orientato a compiti come traduzione e riassunto, usando un approccio encoder-decoder, mentre AutoModelForCausalLM è utilizzato per compiti di generazione di testo e previsione di parole successive, generalmente basandosi su un'architettura avente unicamente un encoder.
 
+\begin{customcode}
+\begin{mintedbox}{python}
+import datasets
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
+def main():
+    raw_datasets = load_dataset(args.dataset_name, args.dataset_subset)
+    train_dataset = raw_datasets[args.split]
+    references = train_dataset["plain_text"]  
 
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    ll_model = AutoModelForCausalLM.from_pretrained(args.model, cache_dir="../llms", load_in_4bit=True, trust_remote_code=True, device_map="auto") 
+\end{mintedbox}
+\caption{Caricamento di dataset, tokenizer e modello LLM.}
+\label{lst:ds-model-tok-llm}
+\end{customcode}
 
+\paragraph{Inferenza}
+La fase d'inferenza si basa sulla funzione \texttt{generate\_summary}.
+Questa inizia ricevendo il modello, il tokenizer, un articolo e la lunghezza massima dell'input per l'inferenza. L'input viene tokenizzato e fornito al modello per generare un riassunto. Trattandosi di un modello generativo che fornisce in output il più probabile completamento del prompt fornito in input, si utilizza un token speciale [END] per distinguere tra l'input e l'output generato. Dopo aver decodificato l'output, la funzione separa e restituisce solo quest'ultima parte, escludendo l'input iniziale.  Il token [END] viene riconosciuto dal modello dopo essere stato aggiunto richiamando sul tokenizer il metodo \texttt{add\_special\_tokens} e ridimensionando il modello con \texttt{resize\_token\_embeddings}.
+La funzione per generare i riassunti si ripete per ogni documento del dataset passato, calcolando per ciascuno un punteggio che mira a valutare la qualità dell'output generato. 
+Quanto detto viene parzialmente mostrato nel listato \ref{lst:infer-llm}.
 
+\begin{customcode}
+\begin{mintedbox}{python}
+import torch
 
-%% CAPITOLO 5
-\chapter{Il codice prodotto}
-\label{cap:codice}
+def generate_summary(document, guidelines, tokenizer, ll_model, max_source_length, device):
+    instruction = f"Summarize the following document according to these guidelines: {guidelines}. Document: {document}"
+    inputs = tokenizer(instruction, return_tensors="pt", max_length=max_source_length, truncation=True).to(device)
 
-Si elencano i passaggi svolti per raggiungere i risultati descritti in precedenza.
+    new_token = torch.tensor([[tokenizer.additional_special_tokens_ids[0]]]).to(device)
+  
+    input_ids_tensor = torch.cat((inputs['input_ids'], new_token), dim=1)
 
-\hypertarget{preprocessamento-dati}{%
-\section{Preprocessamento dati}\label{preprocessamento-dati}}
+    summary_ids = ll_model.generate(input_ids=input_ids_tensor, max_length=512)
+    dec_out = tokenizer.batch_decode(summary_ids, skip_special_tokens=False)
+    return dec_out[0].split('[END]')[1]    
+...
+def main():
+    ...
+    tokenizer.add_special_tokens({'additional_special_tokens': [" [END]"]})
+    ll_model.resize_token_embeddings(len(tokenizer))
 
-    \hypertarget{caricamento-dati-e-librerie}{%
-\subsection{Caricamento dati e
-librerie}\label{caricamento-dati-e-librerie}}
+    predictions = []
+    with torch.no_grad():
+        for document in tqdm(train_dataset["full_text"]):
+            summary = generate_summary(document, args.guidelines, tokenizer, ll_model, args.max_source_length, device)
+            predictions.append(summary)
+    
+    results = compute_metrics(predictions, references, device)
+    
+\end{mintedbox}
+\caption{Processo di inferenza su LLM.}
+\label{lst:infer-llm}
+\end{customcode}
 
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
-        \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
-        \PY{k+kn}{import} \PY{n+nn}{scipy} \PY{k}{as} \PY{n+nn}{sc}
-        \PY{k+kn}{from} \PY{n+nn}{tqdm} \PY{k}{import} \PY{n}{tqdm\PYZus{}notebook}
-        \PY{k+kn}{from} \PY{n+nn}{time} \PY{k}{import} \PY{n}{sleep}
-\end{Verbatim}
+\paragraph{Risultati}
+Come anticipato sono stati utilizzati due modelli LLM, Llama2 7B Chat e Mistral 7B Instruct, per condurre gli esperimenti. Entrambi sono varianti ottimizzate per compiti conversazionali delle loro versioni base general-purpose, specializzate per rispondere a prompt testuali in un contesto di chat. Per valutarne le prestazioni, sono stati condotti test utilizzando input di 4096 token e di 200 token. Dai risultati, sorprendentemente, è emerso che i prompt limitati a 200 token hanno registrato punteggi mediamente superiori, come evidenziato dalla tabella \ref{tab:llm-results}. A causa di risultati preliminari insoddisfacenti, gli esperimenti si sono concentrati esclusivamente sulla generazione di riassunti laici, escludendo il task di produzione di abstract.
 
+\begin{table}
+\centering
+\begin{adjustbox}{width=\textwidth,center}
+\begin{tabular}{@{}lccccccccccccc@{}}
+\toprule
+\textbf{Modello} & \textbf{R-1} & \textbf{R-2} & \textbf{R-L} & \textbf{\(\mathcal{R}\)} & \textbf{BS} & \textbf{BS-F} & \textbf{BS-P} & \textbf{BS-R} & \textbf{B1} & \textbf{B2} & \textbf{B3} & \textbf{B4} & \textbf{\(\Upsilon\)} \\
+\midrule
+\textbf{Llama2 Chat 7B} & & & & & & & & & & & & & \\
+\rowcolor[rgb]{0.965,0.965,0.965} \hspace{5mm}200 Tokens & \textbf{28.15} & \textbf{4.50} & \textbf{21.62} & \textbf{17.91} & \textbf{-14.86} & \textbf{-3.402} & \textbf{-2.997} & \textbf{-3.806} & \textbf{22.44} & \textbf{8.32} & \textbf{3.29} & \textbf{1.37} & \textbf{47.37}\\
+\hspace{5mm}4096 Tokens & 0.33 & 0.0 & 0.7 & 0.34 & -95.19 & -6.154 & -7.772 & -4.535 & 0.0 & 0.0 & 0.0 & 0.0 & 8.47 \\
+\midrule
+\textbf{Mistral Instruct 7B} & & & & & & & & & & & & & \\
+\hspace{5mm}200 Tokens & 19.15 & 2.99 & 16.3 & 12.75 & -24.1 & -4.334 & -4.666 & -4.003 & 8.28 & 3.11 & 1.33 & 0.56 & 40.88 \\
+\rowcolor[rgb]{0.965,0.965,0.965} \hspace{5mm}4096 Tokens & 0.19 & 0.0 & 0.3 & 0.12 & -105.11 & -10.34 & -11.21 & -7.55 & 0.0 & 0.0 & 0.0 & 0.0 & 7.62 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Risultati dei Modelli di Chat Llama2 7B e Mistral Instrument 7B per Diverse Lunghezze di Token.}
+\label{tab:llm-results}
+\end{table}
 
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}2}]:} \PY{c+c1}{\PYZsh{} GLOBAL SETTINGS}
-        \PY{n}{CHECK\PYZus{}ALL\PYZus{}CODES\PYZus{}IN\PYZus{}COUPLES} \PY{o}{=} \PY{k+kc}{False}
-\end{Verbatim}
-
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} \PY{n}{all\PYZus{}data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}
-            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Totale.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{;}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{n}{usecols}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DESCRIZIONE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CODICE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{AZIENDA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
-        \PY{n}{accop} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}
-            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Appaiamenti al 07\PYZus{}09\PYZus{}2018.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{;}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{n}{usecols}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DESCRIZIONE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CODICE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{AZIENDA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{codice\PYZus{}regionale}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
-\end{Verbatim}
-
-
-    \hypertarget{unione-dei-dataframe}{%
-\subsection{Unione dei dataframe}\label{unione-dei-dataframe}}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{all\PYZus{}data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{merge}\PY{p}{(}
-            \PY{n}{all\PYZus{}data}\PY{p}{,}
-            \PY{n}{accop}\PY{p}{,}
-            \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{outer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
-            \PY{n}{on}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{AZIENDA}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CODICE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{DESCRIZIONE}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
-        \PY{k}{assert} \PY{n}{all\PYZus{}data}\PY{o}{.}\PY{n}{codice\PYZus{}regionale}\PY{o}{.}\PY{n}{count}\PY{p}{(}
-        \PY{p}{)} \PY{o}{==} \PY{n}{accop}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
-\end{Verbatim}
+La tabella evidenzia la superiorità di Llama2 Chat in entrambi gli esperimenti rispetto a Mistral Instruct, suggerendo una minore efficacia di quest'ultimo in task di summarization di testi lunghi. Un aspetto notevole è la netta differenza di prestazioni tra i riassunti da 200 token e quelli da 4096 token. In entrambi i modelli, i punteggi per i riassunti più lunghi sono drasticamente inferiori, indicando una possibile perdita di efficacia in presenza di testi di grandi dimensioni.
 
 
 
@@ -2413,11 +3184,17 @@ librerie}\label{caricamento-dati-e-librerie}}
 \addcontentsline{toc}{chapter}{Conclusioni e sviluppi futuri}
 \markboth{CONCLUSIONI}{CONCLUSIONI}
 
-Il problema iniziale richiedeva l'utilizzo di un algoritmo abbastanza intelligente da poter accoppiare brevi testi etichettati come \emph{simili}.
+Questo lavoro ha rappresentato per me l'inizio di uno studio approfondito sul mondo del Natural Language Processing e più in generale sulle tecniche più all'avanguardia del deep learning. 
 
-Dopo aver utilizzato e testato entrambe le tecnologie disponibili nel campo del deep learning (applicato al natural language processing) si è giunti alla conclusione che Doc2Vec, l'algoritmo non supervisionato, fa molta fatica quando i testi non sono semanticamente corretti e logici, e quanto sono presenti molte abbreviazioni.
+La creazione di SciLay rappresenta un contributo importante per la comunità scientifica, in quanto fornisce una risorsa preziosa per lo sviluppo e la valutazione di modelli di intelligenza artificiale in grado di sintetizzare contenuti biomedici complessi in formati più comprensibili.
 
-Al contrario, 
+Gli esperimenti condotti con modelli Seq2Seq e Large Language Models (LLM) hanno rivelato risultati relativamente modesti, indicando che la sfida di generare riassunti laici da articoli scientifici biomedici rimane un problema aperto, confermato anche dal fatto che in letteratura non esistono molte ricerche in merito. Questo aspetto, tuttavia, non deve essere visto negativamente; al contrario, evidenzia un'opportunità stimolante per ulteriori ricerche nel settore del Natural Language Processing (NLP). Infatti, il lavoro svolto sta già contribuendo alla stesura di un articolo destinato alla prestigiosa rivista \href{https://2022.naacl.org/}{NAACL}, dimostrando l'importanza e la rilevanza del progetto nel campo dell'NLP.
+
+Da un punto di vista comparativo, i modelli Seq2Seq hanno mostrato prestazioni superiori rispetto agli LLM testati, suggerendo una minore idoneità di questi ultimi per l'obiettivo specifico di generare riassunti laici. Questa osservazione apre la strada a indagini future su possibili miglioramenti e adattamenti dei modelli Seq2Seq, nonché a un'esplorazione più approfondita di altri modelli Seq2Seq esistenti.
+
+Per quanto riguarda gli obiettivi futuri, sono previsti, relativamente all'articolo menzionato in precedenza, diversi percorsi di ricerca. In primo luogo, c'è l'intenzione di sviluppare nuove architetture Seq2Seq che possano migliorare ulteriormente i risultati attuali. In secondo luogo, si prevede di testare altri modelli Seq2Seq già esistenti, per valutare la loro efficacia nel contesto specifico del dataset SciLay. Infine, per gli LLM, è prevista la sperimentazione con nuovi modelli, come Zephyr 7B, e modelli con un numero maggiore di parametri, come Llama2 70B e Falcon 180B. Un'area particolarmente promettente riguarda non solo l'utilizzo di questi modelli per l'inferenza, ma anche la loro applicazione in scenari di addestramento, per esplorare se e come possono essere adattati e ottimizzati per questa specifica sfida di summarization.
+
+In conclusione, questo lavoro di tesi non solo fornisce un contributo significativo alla comunità scientifica con la creazione del dataset SciLay, ma apre anche numerose strade per future indagini e sviluppi nel campo dell'NLP, particolarmente in relazione alla comprensione e alla sintesi di testi scientifici biomedici per un pubblico non specialistico.
 
 %% RINGRAZIAMENTI
 \chapter*{Ringraziamenti}
@@ -2431,9 +3208,9 @@ Grazie alla mia ...
 \backmatter	
 \addcontentsline{toc}{chapter}{Bibliografia}
 \bibliographystyle{unsrt}
-% i riferimenti bibliografici, che devono essere almeno 20 per una tesi triennale ed almeno 30 per una della magistrale, si scaricano da qui https://dblp.uni-trier.de/search/
-% e si aggiungono al file bibliografia.bib, dopodichè si citano opportuanamente nel testo della tesi con \cite{label}  dove label è il primo elemento di ogni rif. bibliografico subito dopo la parentesi graffa aperta, e.g. DBLP:books/daglib/0087929 (vedi file .bib sopra menzionato)
+
 \bibliography{bibliografia}
 
 
 \end{document}
+1741955

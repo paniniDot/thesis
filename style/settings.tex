@@ -18,50 +18,43 @@
 \definecolor{cyan}{rgb}{0.0,0.6,0.6}
 \definecolor{darkred}{rgb}{0.6,0.0,0.0}
 
+\definecolor{framecolor}{gray}{0.4} % Define the color for the frame
 
-\lstdefinelanguage{json}{
-    basicstyle=\color{stringcolor}\normalfont\ttfamily\footnotesize,
-    showstringspaces=false,
-    literate=
-     *{":"}{{{\color{punct}{:}}}}{1}
-      {","}{{{\color{punct}{,}}}}{1}
-      {\{}{{{\color{bracecolor}{\{}}}}{1}
-      {\}}{{{\color{bracecolor}{\}}}}}{1}
-      {\"doi\"}{{{\color{keywordcolor}{"doi"}}}}{5}
-      {\"pmcid\"}{{{\color{keywordcolor}{"pmcid"}}}}{7}
-      {\"plain\_text\"}{{{\color{keywordcolor}{"plain\_text"}}}}{12}
-      {\"technical\_text\"}{{{\color{keywordcolor}{"technical\_text"}}}}{16}
-      {\"full\_text\"}{{{\color{keywordcolor}{"full\_text"}}}}{11}
-      {\"journal\"}{{{\color{keywordcolor}{"journal"}}}}{9}
-      {\"topics\"}{{{\color{keywordcolor}{"topics"}}}}{8}
-      {\"keywords\"}{{{\color{keywordcolor}{"keywords"}}}}{11},
-}
+\DeclareFloatingEnvironment[
+    fileext=loc,
+    listname={List of Codes},
+    name=Listato,
+]{customcode}
 
-\lstdefinelanguage{XML}
-{
-  stringstyle=\color{mauve},
-  identifierstyle=\color{lightblue},
-  keywordstyle=\color{red},
-  commentstyle=\color{gray}\itshape, % comments in italic and gray color
-  morekeywords={xmlns,version,type,id,x,y,source,target,version,tool,transRef,roleRef,objective,eventually,title,sec,abstract,abstract-type}
-}
-
-\lstset{
-    frame=trbl,
-    rulecolor=\color{black!40},
-    captionpos=b,
-    aboveskip=3mm,
-    belowskip=3mm,
-    columns=flexible,
-    basicstyle=\color{black}\footnotesize,
-    numbers=none,
-    breakatwhitespace=true,
+\DeclareTCBListing{mintedbox}{O{}m!O{}}{
+  listing engine=minted,
+  listing only,
+  minted language=#2,
+  minted style=default,
+  minted options={
+    gobble=0,
     breaklines=true,
-    tabsize=3,
-    showstringspaces=false,
-    backgroundcolor=\color{white},
+    breakafter=,,
+    fontsize=\scriptsize,
+    linenos,  
+    #1},
+  boxsep=3pt,
+  left=3pt,
+  right=3pt,
+  top=3pt,
+  bottom=3pt,
+  arc=0pt,
+  leftrule=0pt,
+  rightrule=0pt,
+  bottomrule=0pt,
+  toprule=0pt,
+  colback=white,
+  colframe=framecolor,
+  coltext=black,
+  boxrule=0.5pt,
+  overlay={},
+  #3
 }
-
 
 
 
